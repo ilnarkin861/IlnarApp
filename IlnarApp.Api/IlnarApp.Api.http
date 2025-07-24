@@ -1,0 +1,6 @@
+@IlnarApp.Api_HostAddress = http://localhost:5131
+
+GET {{IlnarApp.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
