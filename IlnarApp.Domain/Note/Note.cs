@@ -1,5 +1,7 @@
 namespace IlnarApp.Domain.Note;
 
+using Archive;
+using Tag;
 
 public class Note : Entity
 {
