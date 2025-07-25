@@ -1,4 +1,4 @@
-namespace IlnarApp.Domain;
+namespace IlnarApp.Domain.Note;
 
 public class NoteType : Entity
 {

@@ -1,6 +1,6 @@
-using IlnarApp.Domain;
 
-namespace IlnarApp.Infrastructure;
+
+namespace IlnarApp.Domain;
 
 public interface IRepository<TEntity> 
 	where TEntity : Entity

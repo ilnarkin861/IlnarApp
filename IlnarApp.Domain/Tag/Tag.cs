@@ -1,4 +1,6 @@
-namespace IlnarApp.Domain;
+namespace IlnarApp.Domain.Tag;
+
+using Note;
 
 
 public class Tag : Entity

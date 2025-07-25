@@ -1,5 +1,6 @@
-namespace IlnarApp.Domain;
+namespace IlnarApp.Domain.Archive;
 
+using Note;
 
 public class Archive : Entity
 {

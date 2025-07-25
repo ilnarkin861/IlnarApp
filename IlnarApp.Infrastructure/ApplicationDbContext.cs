@@ -1,4 +1,7 @@
-using IlnarApp.Domain;
+using IlnarApp.Domain.Identity;
+using IlnarApp.Domain.Note;
+using IlnarApp.Domain.Tag;
+using IlnarApp.Domain.Archive;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

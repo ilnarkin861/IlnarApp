@@ -1,4 +1,4 @@
-namespace IlnarApp.Infrastructure;
+namespace IlnarApp.Domain;
 
 
 public interface IEntityFilter

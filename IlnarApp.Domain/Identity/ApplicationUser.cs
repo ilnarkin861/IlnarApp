@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 
 
-namespace IlnarApp.Domain;
+namespace IlnarApp.Domain.Identity;
 
 public class ApplicationUser : IdentityUser<Guid>
 {
