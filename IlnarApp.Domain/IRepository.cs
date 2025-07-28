@@ -11,7 +11,7 @@ public interface IRepository<TEntity>
 	Task<TEntity> UpdateAsync(IEnumerable<TEntity> entities);
 	Task<bool> DeleteAsync(TEntity entity);
 	Task<bool> DeleteAsync(IEnumerable<TEntity> entities);
-	Task<bool> HasPreviousEntitiesAsync(int offset, int limit, IEntityFilter? filter);
-	Task<bool> HasNextEntitiesAsync(int offset, int limit, IEntityFilter? filter);
+	Task<bool> HasPreviousEntities(int offset, int limit, IEntityFilter? filter);
+	Task<bool> HasNextEntities(int offset, int limit, IEntityFilter? filter);
 	Task<int> GetEntitiesCountAsync(int offset, int limit, IEntityFilter? filter);
 }
