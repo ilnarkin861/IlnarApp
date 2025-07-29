@@ -1,3 +1,4 @@
+using IlnarApp.Domain;
 using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Note;
 using IlnarApp.Domain.Tag;
@@ -6,7 +7,7 @@ using IlnarApp.Domain.Tag;
 namespace IlnarApp.Application.Models;
 
 
-public class NoteFilterRequest
+public class NoteFilterRequest : IEntityFilter
 {
 	public required NoteType NoteType { get; set; }
 	public int? Year { get; set; }
