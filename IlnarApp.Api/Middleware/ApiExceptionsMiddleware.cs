@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IlnarApp.Api.Middleware;
 
-public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptionsMiddleware> logger)
+public class ApiExceptionsMiddleware(RequestDelegate next)
 {
 	public async Task InvokeAsync(HttpContext context)
 	{
@@ -43,19 +43,16 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
                 
 			case IOException:
 				response.ErrorMessages.Add("File system operation error");
-				logger.LogError(exception, exception.Message);
 				break;
                 
 			case DbUpdateException:
 				response.ErrorMessages.Add("Ошибка базы данных");
-				logger.LogError(exception, exception.Message);
 				break;
                 
 			default:
 				context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
 				response.ErrorMessages.Add("Internal Server Error");
 				response.StatusCode = (int) HttpStatusCode.InternalServerError;
-				logger.LogError(exception, exception.Message);
 				break;
 		}
             
