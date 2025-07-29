@@ -1,4 +1,3 @@
-using IlnarApp.Application.Models;
 using IlnarApp.Domain;
 using IlnarApp.Domain.Note;
 using IlnarApp.Infrastructure;
