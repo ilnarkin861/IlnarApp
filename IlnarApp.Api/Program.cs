@@ -1,7 +1,29 @@
+using IlnarApp.Application.Repositories;
+using IlnarApp.Domain.Archive;
+using IlnarApp.Domain.Note;
+using IlnarApp.Domain.Tag;
+using IlnarApp.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddDbContext<ApplicationDbContext>(
+	options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddSerilog(lc => lc
+	.WriteTo.Console()
+	.WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "Logs/log-.log"), 
+		LogEventLevel.Error, rollingInterval: RollingInterval.Day));
+
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<INoteTypeRepository, NoteTypeRepository>();
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IArchiveRepository, ArchiveRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -16,29 +38,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-	"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-	{
-		var forecast = Enumerable.Range(1, 5).Select(index =>
-				new WeatherForecast
-				(
-					DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-					Random.Shared.Next(-20, 55),
-					summaries[Random.Shared.Next(summaries.Length)]
-				))
-			.ToArray();
-		return forecast;
-	})
-	.WithName("GetWeatherForecast")
-	.WithOpenApi();
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-	public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
