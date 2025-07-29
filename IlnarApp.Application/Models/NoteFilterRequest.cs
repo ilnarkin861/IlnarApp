@@ -9,7 +9,7 @@ namespace IlnarApp.Application.Models;
 
 public class NoteFilterRequest : IEntityFilter
 {
-	public required NoteType NoteType { get; set; }
+	public NoteType? NoteType { get; set; }
 	public int? Year { get; set; }
 	public int? Month { get; set; }
 	public Archive? Archive { get; set; }

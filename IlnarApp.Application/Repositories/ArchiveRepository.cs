@@ -15,12 +15,12 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 		throw new NotImplementedException();
 	}
 
-	public Task<Archive?> GetAsync(Guid id, IEntityFilter? filter)
+	public Task<Archive?> GetAsync(Guid id, IEntityFilter entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter? filter)
+	public Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter entityFilter)
 	{
 		throw new NotImplementedException();
 	}
@@ -45,17 +45,17 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> HasPreviousEntities(int offset, int limit, IEntityFilter? filter)
+	public Task<bool> HasPreviousEntities(int offset, int limit, IEntityFilter entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> HasNextEntities(int offset, int limit, IEntityFilter? filter)
+	public Task<bool> HasNextEntities(int offset, int limit, IEntityFilter entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(int offset, int limit, IEntityFilter? filter)
+	public Task<int> GetEntitiesCountAsync(int offset, int limit, IEntityFilter entityFilter)
 	{
 		throw new NotImplementedException();
 	}
