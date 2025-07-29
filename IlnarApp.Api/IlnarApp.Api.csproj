@@ -16,4 +16,8 @@
       <ProjectReference Include="..\IlnarApp.Application\IlnarApp.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
 </Project>
