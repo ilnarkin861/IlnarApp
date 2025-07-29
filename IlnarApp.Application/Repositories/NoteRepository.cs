@@ -15,12 +15,12 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<Note?> GetAsync(Guid id, IEntityFilter entityFilter)
+	public Task<Note?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter entityFilter)
+	public Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
@@ -45,17 +45,17 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> HasPreviousEntities(int offset, int limit, IEntityFilter entityFilter)
+	public Task<bool> HasPreviousEntities(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> HasNextEntities(int offset, int limit, IEntityFilter entityFilter)
+	public Task<bool> HasNextEntities(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(int offset, int limit, IEntityFilter entityFilter)
+	public Task<int> GetEntitiesCountAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
