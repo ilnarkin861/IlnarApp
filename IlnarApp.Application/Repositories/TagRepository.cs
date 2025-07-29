@@ -1,46 +1,46 @@
 using IlnarApp.Domain;
-using IlnarApp.Domain.Note;
+using IlnarApp.Domain.Tag;
+using IlnarApp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
+namespace IlnarApp.Application.Repositories;
 
-namespace IlnarApp.Infrastructure.Repositories;
 
-
-public class NoteRepository(ApplicationDbContext context) : INoteRepository
+public class TagRepository(ApplicationDbContext context) : ITagRepository
 {
-	private DbSet<Note> GetDbSet() => context.Set<Note>();
+	private DbSet<Tag> GetDbSet() => context.Set<Tag>();
 	
-	public Task<Note> InsertAsync(Note entity)
+	public Task<Tag> InsertAsync(Tag entity)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<Note?> GetAsync(Guid id, IEntityFilter? filter)
+	public Task<Tag?> GetAsync(Guid id, IEntityFilter? filter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? filter)
+	public Task<List<Tag>> GetListAsync(int offset, int limit, IEntityFilter? filter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<Note> UpdateAsync(Note entity)
+	public Task<Tag> UpdateAsync(Tag entity)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<Note> UpdateAsync(IEnumerable<Note> entities)
+	public Task<Tag> UpdateAsync(IEnumerable<Tag> entities)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(Note entity)
+	public Task<bool> DeleteAsync(Tag entity)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(IEnumerable<Note> entities)
+	public Task<bool> DeleteAsync(IEnumerable<Tag> entities)
 	{
 		throw new NotImplementedException();
 	}

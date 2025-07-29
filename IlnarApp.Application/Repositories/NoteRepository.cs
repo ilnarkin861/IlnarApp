@@ -1,48 +1,47 @@
+using IlnarApp.Application.Models;
 using IlnarApp.Domain;
 using IlnarApp.Domain.Note;
+using IlnarApp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
+namespace IlnarApp.Application.Repositories;
 
-namespace IlnarApp.Infrastructure.Repositories;
 
-
-public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeRepository
+public class NoteRepository(ApplicationDbContext context) : INoteRepository
 {
-	private DbSet<NoteType> GetDbSet() => context.Set<NoteType>();
+	private DbSet<Note> GetDbSet() => context.Set<Note>();
 	
-	
-	public Task<NoteType> InsertAsync(NoteType entity)
-	{
-		throw new NotImplementedException();
-	}
-	
-
-	public Task<NoteType?> GetAsync(Guid id, IEntityFilter? filter)
+	public Task<Note> InsertAsync(Note entity)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? filter)
+	public Task<Note?> GetAsync(Guid id, IEntityFilter? filter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<NoteType> UpdateAsync(NoteType entity)
+	public Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? filter)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<NoteType> UpdateAsync(IEnumerable<NoteType> entities)
+	public Task<Note> UpdateAsync(Note entity)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(NoteType entity)
+	public Task<Note> UpdateAsync(IEnumerable<Note> entities)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(IEnumerable<NoteType> entities)
+	public Task<bool> DeleteAsync(Note entity)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task<bool> DeleteAsync(IEnumerable<Note> entities)
 	{
 		throw new NotImplementedException();
 	}

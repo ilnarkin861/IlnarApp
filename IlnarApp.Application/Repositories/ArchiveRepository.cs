@@ -1,9 +1,9 @@
 using IlnarApp.Domain;
 using IlnarApp.Domain.Archive;
+using IlnarApp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace IlnarApp.Infrastructure.Repositories;
+namespace IlnarApp.Application.Repositories;
 
 
 public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepository
