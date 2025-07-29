@@ -7,10 +7,8 @@ using IlnarApp.Domain.Tag;
 namespace IlnarApp.Application.Models;
 
 
-public class NoteRequest
+public class NoteDto
 {
-	public string? Id { get; set; }
-	
 	public string? Title { get; set; }
 	
 	[Required(ErrorMessage = "Текст записи не должен быть пустым")]
