@@ -58,7 +58,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 		
 		noteType.Title = noteTypeDto.Title;
 		
-		return Ok(await noteTypeRepository.InsertAsync(noteType));
+		return Ok(await noteTypeRepository.UpdateAsync(noteType));
 	}
 
 	
@@ -81,9 +81,8 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 
 		var response = new DefaultResponse
 		{
-			ErrorMessages = errorsList,
-			Success = result,
-			StatusCode = result ? (int)HttpStatusCode.OK : (int)HttpStatusCode.BadRequest
+			Messages = errorsList,
+			Success = result
 		};
 
 		return result ? Ok(response) : BadRequest(response);
