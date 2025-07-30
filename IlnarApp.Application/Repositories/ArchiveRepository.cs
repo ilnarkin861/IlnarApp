@@ -8,26 +8,34 @@ namespace IlnarApp.Application.Repositories;
 
 public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepository
 {
-	private DbSet<Archive> GetDbSet => context.Set<Archive>();
+	private DbSet<Archive> GetDbSet() => context.Set<Archive>();
 	
-	public Task<Archive> InsertAsync(Archive entity)
+	public async Task<Archive> InsertAsync(Archive archive)
 	{
-		throw new NotImplementedException();
+		var entity = await GetDbSet().AddAsync(archive);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
-	public Task<Archive?> GetAsync(Guid id, IEntityFilter? entityFilter)
+	public async Task<Archive?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
-	public Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
+	public async Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().OrderByDescending(x => x.CreatedAt)
+			.Skip(offset)
+			.Take(limit)
+			.IgnoreAutoIncludes()
+			.ToListAsync();
 	}
 
-	public Task<Archive> UpdateAsync(Archive entity)
+	public async Task<Archive> UpdateAsync(Archive archive)
 	{
-		throw new NotImplementedException();
+		var entity = GetDbSet().Update(archive);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
 	public Task<Archive> UpdateAsync(IEnumerable<Archive> entities)
@@ -35,9 +43,10 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(Archive entity)
+	public async Task<bool> DeleteAsync(Archive entity)
 	{
-		throw new NotImplementedException();
+		context.Remove(entity);
+		return await context.SaveChangesAsync() > 0;
 	}
 
 	public Task<bool> DeleteAsync(IEnumerable<Archive> entities)
@@ -55,8 +64,8 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
+	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().CountAsync();
 	}
 }
