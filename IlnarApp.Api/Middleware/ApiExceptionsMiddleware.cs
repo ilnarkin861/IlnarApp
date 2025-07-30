@@ -34,25 +34,24 @@ public class ApiExceptionsMiddleware(RequestDelegate next)
 		switch (exception)
 		{
 			case ApiException restException:
-				response.ErrorMessages.Add(restException.Message);
+				response.Messages.Add(restException.Message);
 				break;
 
 			case EntityNotFoundException entityNotFoundException:
-				response.ErrorMessages.Add(entityNotFoundException.Message);
+				response.Messages.Add(entityNotFoundException.Message);
 				break;
                 
 			case IOException:
-				response.ErrorMessages.Add("File system operation error");
+				response.Messages.Add("File system operation error");
 				break;
                 
 			case DbUpdateException:
-				response.ErrorMessages.Add("Ошибка базы данных");
+				response.Messages.Add("Ошибка базы данных");
 				break;
                 
 			default:
 				context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-				response.ErrorMessages.Add("Internal Server Error");
-				response.StatusCode = (int) HttpStatusCode.InternalServerError;
+				response.Messages.Add("Internal Server Error");
 				break;
 		}
             

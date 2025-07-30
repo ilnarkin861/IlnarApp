@@ -23,8 +23,7 @@ public class ValidationAction : ActionFilterAttribute
 		var response = new DefaultResponse
 		{
 			Success = false,
-			StatusCode = (int) HttpStatusCode.BadRequest,
-			ErrorMessages = errorsList
+			Messages = errorsList
 		};
 		
 		context.Result = new BadRequestObjectResult(response);
