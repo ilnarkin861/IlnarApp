@@ -50,7 +50,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[ValidationAction]
 	public async Task<IActionResult> InsertAsync([FromBody] ArchiveDto archiveDto)
 	{
-		var archive = new Archive{Name = archiveDto.Title};
+		var archive = new Archive{Title = archiveDto.Title};
 		
 		return Ok(await archiveRepository.InsertAsync(archive));
 	}
@@ -68,7 +68,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 			throw new EntityNotFoundException("Архив не найден");
 		}
 		
-		archive.Name = archiveDto.Title;
+		archive.Title = archiveDto.Title;
 		
 		return Ok(await archiveRepository.UpdateAsync(archive));
 	}

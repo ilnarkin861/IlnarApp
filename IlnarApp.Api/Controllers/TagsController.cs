@@ -50,7 +50,7 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 	[ValidationAction]
 	public async Task<IActionResult> InsertAsync([FromBody] TagDto tagDto)
 	{
-		var noteType = new Tag{Name = tagDto.Title};
+		var noteType = new Tag{Title = tagDto.Title};
 		
 		return Ok(await tagRepository.InsertAsync(noteType));
 	}
@@ -68,7 +68,7 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 			throw new EntityNotFoundException("Тег не найден");
 		}
 		
-		tag.Name = tagDto.Title;
+		tag.Title = tagDto.Title;
 		
 		return Ok(await tagRepository.UpdateAsync(tag));
 	}
