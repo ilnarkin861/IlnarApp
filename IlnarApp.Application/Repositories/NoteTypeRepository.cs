@@ -11,25 +11,29 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 	private DbSet<NoteType> GetDbSet() => context.Set<NoteType>();
 	
 	
-	public Task<NoteType> InsertAsync(NoteType entity)
+	public async Task<NoteType> InsertAsync(NoteType noteType)
 	{
-		throw new NotImplementedException();
+		var entity = await GetDbSet().AddAsync(noteType);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 	
 
-	public Task<NoteType?> GetAsync(Guid id, IEntityFilter? entityFilter)
+	public async Task<NoteType?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
-	public Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
+	public async Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().AsNoTracking().ToListAsync();
 	}
 
-	public Task<NoteType> UpdateAsync(NoteType entity)
+	public async Task<NoteType> UpdateAsync(NoteType noteType)
 	{
-		throw new NotImplementedException();
+		var entity = GetDbSet().Update(noteType);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
 	public Task<NoteType> UpdateAsync(IEnumerable<NoteType> entities)
@@ -37,9 +41,10 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(NoteType entity)
+	public async Task<bool> DeleteAsync(NoteType entity)
 	{
-		throw new NotImplementedException();
+		context.Remove(entity);
+		return await context.SaveChangesAsync() > 0;
 	}
 
 	public Task<bool> DeleteAsync(IEnumerable<NoteType> entities)
