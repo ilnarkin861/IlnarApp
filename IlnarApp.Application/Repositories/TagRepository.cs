@@ -10,24 +10,32 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 {
 	private DbSet<Tag> GetDbSet() => context.Set<Tag>();
 	
-	public Task<Tag> InsertAsync(Tag entity)
+	public async Task<Tag> InsertAsync(Tag tag)
 	{
-		throw new NotImplementedException();
+		var entity = await GetDbSet().AddAsync(tag);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
-	public Task<Tag?> GetAsync(Guid id, IEntityFilter? entityFilter)
+	public async Task<Tag?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
-	public Task<List<Tag>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
+	public async Task<List<Tag>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().OrderByDescending(x => x.CreatedAt)
+			.Skip(offset)
+			.Take(limit)
+			.IgnoreAutoIncludes()
+			.ToListAsync();
 	}
 
-	public Task<Tag> UpdateAsync(Tag entity)
+	public async Task<Tag> UpdateAsync(Tag tag)
 	{
-		throw new NotImplementedException();
+		var entity = GetDbSet().Update(tag);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
 	public Task<Tag> UpdateAsync(IEnumerable<Tag> entities)
@@ -35,9 +43,10 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(Tag entity)
+	public async Task<bool> DeleteAsync(Tag entity)
 	{
-		throw new NotImplementedException();
+		context.Remove(entity);
+		return await context.SaveChangesAsync() > 0;
 	}
 
 	public Task<bool> DeleteAsync(IEnumerable<Tag> entities)
@@ -55,8 +64,8 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
+	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().CountAsync();
 	}
 }
