@@ -55,7 +55,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(int offset, int limit, IEntityFilter? entityFilter)
+	public Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
