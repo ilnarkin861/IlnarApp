@@ -1,13 +1,14 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using IlnarApp.Api.Exceptions;
 using IlnarApp.Application.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace IlnarApp.Api.Middleware;
 
-public class ApiExceptionsMiddleware(RequestDelegate next)
+public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptionsMiddleware> logger)
 {
 	public async Task InvokeAsync(HttpContext context)
 	{
@@ -47,11 +48,13 @@ public class ApiExceptionsMiddleware(RequestDelegate next)
                 
 			case DbUpdateException:
 				response.Messages.Add("Ошибка базы данных");
+				logger.LogError(exception, exception.Message);
 				break;
                 
 			default:
 				context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
 				response.Messages.Add("Internal Server Error");
+				logger.LogError(exception, exception.Message);
 				break;
 		}
             
