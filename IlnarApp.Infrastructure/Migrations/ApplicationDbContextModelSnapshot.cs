@@ -149,8 +149,8 @@ namespace IlnarApp.Infrastructure.Migrations
                     b.Property<Guid?>("ArchiveId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.Property<Guid>("NoteTypeId")
                         .HasColumnType("uuid");

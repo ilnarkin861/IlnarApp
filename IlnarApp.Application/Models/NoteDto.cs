@@ -18,7 +18,7 @@ public class NoteDto
 	public required NoteType NoteType { get; set; }
 	
 	[Required(ErrorMessage = "Укажи дату")]
-	public required string Date { get; set; }
+	public required DateOnly Date { get; set; }
 	
 	public Archive? Archive { get; set; }
 
