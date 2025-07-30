@@ -1,3 +1,4 @@
+using IlnarApp.Api.Middleware;
 using IlnarApp.Application.Repositories;
 using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Note;
@@ -28,6 +29,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ApiExceptionsMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
