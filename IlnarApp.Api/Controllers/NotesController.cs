@@ -32,7 +32,7 @@ public class NotesController(INoteRepository noteRepository) : BaseController
 	{
 		var notesLimit = limit is 0 or > 10 ? 10 : limit;
 
-		var notes = await noteRepository.GetListAsync(offset, limit, filter);
+		var notes = await noteRepository.GetListAsync(offset, notesLimit, filter);
 
 		var notesCount = await noteRepository.GetEntitiesCountAsync(filter);
 		
