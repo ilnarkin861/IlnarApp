@@ -1,3 +1,4 @@
+using IlnarApp.Application.Models;
 using IlnarApp.Domain;
 using IlnarApp.Domain.Note;
 using IlnarApp.Infrastructure;
@@ -10,24 +11,38 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 {
 	private DbSet<Note> GetDbSet() => context.Set<Note>();
 	
-	public Task<Note> InsertAsync(Note entity)
+	public async Task<Note> InsertAsync(Note note)
 	{
-		throw new NotImplementedException();
+		var entity = await GetDbSet().AddAsync(note);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
-	public Task<Note?> GetAsync(Guid id, IEntityFilter? entityFilter)
+	
+	public async Task<Note?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
-	public Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
+
+	
+	
+	public async Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		if (entityFilter == null)
+		{
+			return await GetDbSet().Skip(offset).Take(limit).ToListAsync();
+		}
+
+		return await BuildQuery(entityFilter).Skip(offset).Take(limit).ToListAsync();
 	}
 
-	public Task<Note> UpdateAsync(Note entity)
+	
+	public async Task<Note> UpdateAsync(Note note)
 	{
-		throw new NotImplementedException();
+		var entity = GetDbSet().Update(note);
+		await context.SaveChangesAsync();
+		return entity.Entity;
 	}
 
 	public Task<Note> UpdateAsync(IEnumerable<Note> entities)
@@ -35,9 +50,10 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(Note entity)
+	public async Task<bool> DeleteAsync(Note entity)
 	{
-		throw new NotImplementedException();
+		context.Remove(entity);
+		return await context.SaveChangesAsync() > 0;
 	}
 
 	public Task<bool> DeleteAsync(IEnumerable<Note> entities)
@@ -55,8 +71,54 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
+	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		if (entityFilter == null) return await GetDbSet().CountAsync();
+
+		return await BuildQuery(entityFilter).CountAsync();
+	}
+
+
+	public async Task<List<Note>> GetEntitiesAddedYearAgo(int offset, int limit, int year, int month, int day)
+	{
+		return await GetDbSet()
+			.Skip(offset)
+			.Take(limit)
+			.Where(x => x.Date.Year == year && x.Date.Month == month && x.Date.Day == day)
+			.ToListAsync();
+	}
+	
+	private IQueryable<Note> BuildQuery(IEntityFilter entityFilter)
+	{
+		var query = GetDbSet().AsQueryable();
+	
+		var filter = (NoteFilterRequest)entityFilter;
+		
+		if (filter.NoteTypeId != null)
+		{
+			query = query.Where(x => x.NoteType.Id == filter.NoteTypeId);
+		}
+
+		if (filter.ArchiveId != null)
+		{
+			query = query.Where(x => x.Archive != null && x.Archive.Id == filter.ArchiveId);
+		}
+
+		if (filter.Year != null)
+		{
+			query = query.Where(x => x.Date.Year == filter.Year);
+		}
+			
+		if (filter.Month != null)
+		{
+			query = query.Where(x => x.Date.Month == filter.Month);
+		}
+
+		if (filter.TagIds is { Count: > 0 })
+		{
+			query = query.Where(x => filter.TagIds.Contains(x.Id));
+		}
+
+		return query;
 	}
 }
