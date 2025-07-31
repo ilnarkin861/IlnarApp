@@ -17,7 +17,8 @@ namespace IlnarApp.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +56,8 @@ namespace IlnarApp.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,7 +98,8 @@ namespace IlnarApp.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: true),
                     Text = table.Column<string>(type: "text", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    NoteTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
                     ArchiveId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -107,6 +110,12 @@ namespace IlnarApp.Infrastructure.Migrations
                         column: x => x.ArchiveId,
                         principalTable: "Archive",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Note_NoteType_NoteTypeId",
+                        column: x => x.NoteTypeId,
+                        principalTable: "NoteType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -245,6 +254,11 @@ namespace IlnarApp.Infrastructure.Migrations
                 column: "ArchiveId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Note_NoteTypeId",
+                table: "Note",
+                column: "NoteTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_NoteTag_TagsId",
                 table: "NoteTag",
                 column: "TagsId");
@@ -294,9 +308,6 @@ namespace IlnarApp.Infrastructure.Migrations
                 name: "NoteTag");
 
             migrationBuilder.DropTable(
-                name: "NoteType");
-
-            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
@@ -325,6 +336,9 @@ namespace IlnarApp.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Archive");
+
+            migrationBuilder.DropTable(
+                name: "NoteType");
         }
     }
 }

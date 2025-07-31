@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IlnarApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250721152735_Init")]
+    [Migration("20250731150838_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,7 +25,25 @@ namespace IlnarApp.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("IlnarApp.Domain.ApplicationRole", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Archive.Archive", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Archive");
+                });
+
+            modelBuilder.Entity("IlnarApp.Domain.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +70,7 @@ namespace IlnarApp.Infrastructure.Migrations
                     b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("IlnarApp.Domain.ApplicationUser", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Identity.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,22 +143,7 @@ namespace IlnarApp.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("IlnarApp.Domain.Archive", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Archive");
-                });
-
-            modelBuilder.Entity("IlnarApp.Domain.Note", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Note.Note", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -149,8 +152,11 @@ namespace IlnarApp.Infrastructure.Migrations
                     b.Property<Guid?>("ArchiveId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("NoteTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -163,10 +169,12 @@ namespace IlnarApp.Infrastructure.Migrations
 
                     b.HasIndex("ArchiveId");
 
+                    b.HasIndex("NoteTypeId");
+
                     b.ToTable("Note");
                 });
 
-            modelBuilder.Entity("IlnarApp.Domain.NoteType", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Note.NoteType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -181,13 +189,16 @@ namespace IlnarApp.Infrastructure.Migrations
                     b.ToTable("NoteType");
                 });
 
-            modelBuilder.Entity("IlnarApp.Domain.Tag", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Tag.Tag", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -314,18 +325,26 @@ namespace IlnarApp.Infrastructure.Migrations
                     b.ToTable("NoteTag");
                 });
 
-            modelBuilder.Entity("IlnarApp.Domain.Note", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Note.Note", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.Archive", "Archive")
+                    b.HasOne("IlnarApp.Domain.Archive.Archive", "Archive")
                         .WithMany("Notes")
                         .HasForeignKey("ArchiveId");
 
+                    b.HasOne("IlnarApp.Domain.Note.NoteType", "NoteType")
+                        .WithMany()
+                        .HasForeignKey("NoteTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Archive");
+
+                    b.Navigation("NoteType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.ApplicationRole", null)
+                    b.HasOne("IlnarApp.Domain.Identity.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -334,7 +353,7 @@ namespace IlnarApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.ApplicationUser", null)
+                    b.HasOne("IlnarApp.Domain.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -343,7 +362,7 @@ namespace IlnarApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.ApplicationUser", null)
+                    b.HasOne("IlnarApp.Domain.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -352,13 +371,13 @@ namespace IlnarApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.ApplicationRole", null)
+                    b.HasOne("IlnarApp.Domain.Identity.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IlnarApp.Domain.ApplicationUser", null)
+                    b.HasOne("IlnarApp.Domain.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -367,7 +386,7 @@ namespace IlnarApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.ApplicationUser", null)
+                    b.HasOne("IlnarApp.Domain.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -376,20 +395,20 @@ namespace IlnarApp.Infrastructure.Migrations
 
             modelBuilder.Entity("NoteTag", b =>
                 {
-                    b.HasOne("IlnarApp.Domain.Note", null)
+                    b.HasOne("IlnarApp.Domain.Note.Note", null)
                         .WithMany()
                         .HasForeignKey("NotesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IlnarApp.Domain.Tag", null)
+                    b.HasOne("IlnarApp.Domain.Tag.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("IlnarApp.Domain.Archive", b =>
+            modelBuilder.Entity("IlnarApp.Domain.Archive.Archive", b =>
                 {
                     b.Navigation("Notes");
                 });
