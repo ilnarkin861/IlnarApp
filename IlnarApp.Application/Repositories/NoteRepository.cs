@@ -15,6 +15,12 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	{
 		var entity = await GetDbSet().AddAsync(note);
 		context.Entry(entity.Entity.NoteType).State = EntityState.Unchanged;
+
+		if (entity.Entity.Archive != null)
+		{
+			context.Entry(entity.Entity.Archive).State = EntityState.Unchanged;
+		}
+		
 		await context.SaveChangesAsync();
 		return entity.Entity;
 	}
@@ -56,6 +62,12 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	{
 		var entity = GetDbSet().Update(note);
 		context.Entry(entity.Entity.NoteType).State = EntityState.Unchanged;
+
+		if (entity.Entity.Archive != null)
+		{
+			context.Entry(entity.Entity.Archive).State = EntityState.Unchanged;
+		}
+		
 		await context.SaveChangesAsync();
 		return entity.Entity;
 	}
