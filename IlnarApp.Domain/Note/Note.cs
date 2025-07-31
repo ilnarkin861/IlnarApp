@@ -10,5 +10,5 @@ public class Note : Entity
 	public required NoteType NoteType { get; set; }
 	public DateOnly Date { get; set; }
 	public Archive? Archive { get; set; }
-	public List<Tag> Tags { get; set; } = [];
+	public List<Tag>? Tags { get; set; } = [];
 }
