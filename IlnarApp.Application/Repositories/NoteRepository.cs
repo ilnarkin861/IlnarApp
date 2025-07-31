@@ -14,6 +14,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	public async Task<Note> InsertAsync(Note note)
 	{
 		var entity = await GetDbSet().AddAsync(note);
+		context.Entry(entity.Entity.NoteType).State = EntityState.Unchanged;
 		await context.SaveChangesAsync();
 		return entity.Entity;
 	}
@@ -21,26 +22,40 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	
 	public async Task<Note?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet()
+			.Include(x => x.NoteType)
+			.Include(x => x.Archive)
+			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 
-	
 	
 	public async Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		if (entityFilter == null)
 		{
-			return await GetDbSet().Skip(offset).Take(limit).ToListAsync();
+			return await GetDbSet()
+				.Skip(offset)
+				.Take(limit)
+				.Include(x => x.NoteType)
+				.Include(x => x.Archive)
+				.ToListAsync();
 		}
 
-		return await BuildQuery(entityFilter).Skip(offset).Take(limit).ToListAsync();
+		return await BuildQuery(entityFilter)
+			.Skip(offset)
+			.Take(limit)
+			.Include(x => x.NoteType)
+			.Include(x => x.Archive)
+			.OrderByDescending(x => x.Date)
+			.ToListAsync();
 	}
 
 	
 	public async Task<Note> UpdateAsync(Note note)
 	{
 		var entity = GetDbSet().Update(note);
+		context.Entry(entity.Entity.NoteType).State = EntityState.Unchanged;
 		await context.SaveChangesAsync();
 		return entity.Entity;
 	}
