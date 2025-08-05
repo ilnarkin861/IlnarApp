@@ -19,7 +19,7 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 
 	public async Task<Archive?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
