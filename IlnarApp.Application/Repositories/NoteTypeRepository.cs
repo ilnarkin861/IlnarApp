@@ -21,12 +21,12 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 
 	public async Task<NoteType?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().AsNoTracking().ToListAsync();
+		return await GetDbSet().ToListAsync();
 	}
 
 	public async Task<NoteType> UpdateAsync(NoteType noteType)
