@@ -2,13 +2,19 @@ using IlnarApp.Api.Actions;
 using IlnarApp.Api.Exceptions;
 using IlnarApp.Application.Helpers;
 using IlnarApp.Application.Models;
+using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Note;
+using IlnarApp.Domain.Tag;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlnarApp.Api.Controllers;
 
 
-public class NotesController(INoteRepository noteRepository) : BaseController
+public class NotesController(
+	INoteRepository noteRepository,
+	INoteTypeRepository noteTypeRepository,
+	IArchiveRepository archiveRepository,
+	ITagRepository tagRepository) : BaseController
 {
 	[HttpGet]
 	[Route("{id:guid}")]
@@ -51,15 +57,36 @@ public class NotesController(INoteRepository noteRepository) : BaseController
 	[ValidationAction]
 	public async Task<IActionResult> InsertAsync([FromBody] NoteDto noteDto)
 	{
+		var noteType = await noteTypeRepository.GetAsync(noteDto.NoteType.Id, null);
+
+		if (noteType == null) throw new EntityNotFoundException("Тип записи не найден");
+
 		var note = new Note
 		{
 			Title = noteDto.Title,
 			Text = noteDto.Text,
-			Date = noteDto.Date,
-			NoteType = noteDto.NoteType,
-			Archive = noteDto.Archive,
-			Tags = noteDto.Tags ?? []
+			NoteType = noteType,
+			Date = noteDto.Date
 		};
+		
+		if (noteDto.Archive != null)
+		{
+			var archive = await archiveRepository.GetAsync(noteDto.Archive.Id, null);
+
+			if (archive != null) note.Archive = archive;
+		}
+		
+		if (noteDto.Tags is not { Count: > 0 }) return Ok(await noteRepository.InsertAsync(note));
+		
+		var tags = new List<Tag>();
+
+		foreach (var item in noteDto.Tags)
+		{
+			var tag = await tagRepository.GetAsync(item.Id, null);
+			if (tag != null) tags.Add(tag);
+		}
+
+		note.Tags = tags;
 
 		return Ok(await noteRepository.InsertAsync(note));
 	}
@@ -76,13 +103,37 @@ public class NotesController(INoteRepository noteRepository) : BaseController
 		{
 			throw new EntityNotFoundException("Запись не найдена");
 		}
+		
+		var noteType = await noteTypeRepository.GetAsync(noteDto.NoteType.Id, null);
 
+		if (noteType == null) throw new EntityNotFoundException("Тип записи не найден");
+		
 		note.Title = noteDto.Title;
 		note.Text = noteDto.Text;
 		note.Date = noteDto.Date;
-		note.NoteType = noteDto.NoteType;
+		note.NoteType = noteType;
 		note.Archive = noteDto.Archive;
-		note.Tags = noteDto.Tags ?? [];
+		
+		if (noteDto.Archive != null)
+		{
+			var archive = await archiveRepository.GetAsync(noteDto.Archive.Id, null);
+
+			if (archive != null) note.Archive = archive;
+		}
+		
+		note.Tags?.Clear();
+		
+		if (noteDto.Tags is not { Count: > 0 }) return Ok(await noteRepository.UpdateAsync(note));
+		
+		var tags = new List<Tag>();
+		
+		foreach (var item in noteDto.Tags)
+		{
+			var tag = await tagRepository.GetAsync(item.Id, null);
+			if (tag != null) tags.Add(tag);
+		}
+
+		note.Tags = tags;
 		
 		return Ok(await noteRepository.UpdateAsync(note));
 	}
