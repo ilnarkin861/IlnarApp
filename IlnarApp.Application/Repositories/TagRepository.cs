@@ -19,7 +19,7 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 
 	public async Task<Tag?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<List<Tag>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
