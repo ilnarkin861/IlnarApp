@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.18" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.17"/>
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
@@ -19,6 +20,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\IlnarApp.Application\IlnarApp.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Logs\" />
     </ItemGroup>
 
 </Project>
