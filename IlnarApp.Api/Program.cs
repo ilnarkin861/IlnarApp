@@ -18,7 +18,9 @@ builder.Services.AddSerilog(lc => lc
 	.WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "Logs/log-.log"), 
 		LogEventLevel.Error, rollingInterval: RollingInterval.Day));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 builder.Services.AddScoped<INoteTypeRepository, NoteTypeRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
