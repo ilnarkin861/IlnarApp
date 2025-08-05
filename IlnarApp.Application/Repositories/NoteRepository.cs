@@ -14,14 +14,9 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	public async Task<Note> InsertAsync(Note note)
 	{
 		var entity = await GetDbSet().AddAsync(note);
-		context.Entry(entity.Entity.NoteType).State = EntityState.Unchanged;
 
-		if (entity.Entity.Archive != null)
-		{
-			context.Entry(entity.Entity.Archive).State = EntityState.Unchanged;
-		}
-		
 		await context.SaveChangesAsync();
+
 		return entity.Entity;
 	}
 
@@ -31,6 +26,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		return await GetDbSet()
 			.Include(x => x.NoteType)
 			.Include(x => x.Archive)
+			.Include(x => x.Tags)
 			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
@@ -45,6 +41,8 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 				.Take(limit)
 				.Include(x => x.NoteType)
 				.Include(x => x.Archive)
+				.Include(x => x.Tags)
+				.OrderByDescending(x => x.Date)
 				.ToListAsync();
 		}
 
@@ -61,14 +59,9 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	public async Task<Note> UpdateAsync(Note note)
 	{
 		var entity = GetDbSet().Update(note);
-		context.Entry(entity.Entity.NoteType).State = EntityState.Unchanged;
-
-		if (entity.Entity.Archive != null)
-		{
-			context.Entry(entity.Entity.Archive).State = EntityState.Unchanged;
-		}
 		
 		await context.SaveChangesAsync();
+		
 		return entity.Entity;
 	}
 
