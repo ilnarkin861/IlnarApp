@@ -34,24 +34,13 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	
 	public async Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		if (entityFilter == null)
-		{
-			return await GetDbSet()
-				.Skip(offset)
-				.Take(limit)
-				.Include(x => x.NoteType)
-				.Include(x => x.Archive)
-				.Include(x => x.Tags)
-				.OrderByDescending(x => x.Date)
-				.ToListAsync();
-		}
-
 		return await BuildQuery(entityFilter)
 			.Skip(offset)
 			.Take(limit)
+			.OrderByDescending(x => x.Date)
 			.Include(x => x.NoteType)
 			.Include(x => x.Archive)
-			.OrderByDescending(x => x.Date)
+			.Include(x => x.Tags)
 			.ToListAsync();
 	}
 
@@ -97,21 +86,12 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 
 		return await BuildQuery(entityFilter).CountAsync();
 	}
-
-
-	public async Task<List<Note>> GetEntitiesAddedYearAgo(int offset, int limit, int year, int month, int day)
-	{
-		return await GetDbSet()
-			.Skip(offset)
-			.Take(limit)
-			.Where(x => x.Date.Year == year && x.Date.Month == month && x.Date.Day == day)
-			.ToListAsync();
-	}
 	
-	private IQueryable<Note> BuildQuery(IEntityFilter entityFilter)
+	private IQueryable<Note> BuildQuery(IEntityFilter? entityFilter)
 	{
 		var query = GetDbSet().AsQueryable();
-	
+
+		if (entityFilter == null) return query;
 		var filter = (NoteFilterRequest)entityFilter;
 		
 		if (filter.NoteTypeId != null)
@@ -133,10 +113,17 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		{
 			query = query.Where(x => x.Date.Month == filter.Month);
 		}
+		
+		if (filter.Month != null)
+		{
+			query = query.Where(x => x.Date.Day == filter.Day);
+		}
 
 		if (filter.TagIds is { Count: > 0 })
 		{
-			query = query.Where(x => filter.TagIds.Contains(x.Id));
+			query = query
+				// ReSharper disable once NullableWarningSuppressionIsUsed
+				.Where(x => x.Tags!.Any(t => filter.TagIds.Contains(t.Id)));
 		}
 
 		return query;
