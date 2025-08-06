@@ -19,12 +19,12 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 
 	public async Task<Tag?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(t => t.Id == id);
 	}
 
 	public async Task<List<Tag>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().OrderByDescending(x => x.CreatedAt)
+		return await GetDbSet().OrderByDescending(t => t.CreatedAt)
 			.Skip(offset)
 			.Take(limit)
 			.ToListAsync();

@@ -21,7 +21,7 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 
 	public async Task<NoteType?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(nt => nt.Id == id);
 	}
 
 	public async Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)

@@ -24,10 +24,10 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	public async Task<Note?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
 		return await GetDbSet()
-			.Include(x => x.NoteType)
-			.Include(x => x.Archive)
-			.Include(x => x.Tags)
-			.FirstOrDefaultAsync(x => x.Id == id);
+			.Include(n => n.NoteType)
+			.Include(n => n.Archive)
+			.Include(n => n.Tags)
+			.FirstOrDefaultAsync(n => n.Id == id);
 	}
 
 
@@ -37,10 +37,10 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		return await BuildQuery(entityFilter)
 			.Skip(offset)
 			.Take(limit)
-			.OrderByDescending(x => x.Date)
-			.Include(x => x.NoteType)
-			.Include(x => x.Archive)
-			.Include(x => x.Tags)
+			.OrderByDescending(n => n.Date)
+			.Include(n => n.NoteType)
+			.Include(n => n.Archive)
+			.Include(n => n.Tags)
 			.ToListAsync();
 	}
 
@@ -96,34 +96,34 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		
 		if (filter.NoteTypeId != null)
 		{
-			query = query.Where(x => x.NoteType.Id == filter.NoteTypeId);
+			query = query.Where(n => n.NoteType.Id == filter.NoteTypeId);
 		}
 
 		if (filter.ArchiveId != null)
 		{
-			query = query.Where(x => x.Archive != null && x.Archive.Id == filter.ArchiveId);
+			query = query.Where(n => n.Archive != null && n.Archive.Id == filter.ArchiveId);
 		}
 
 		if (filter.Year != null)
 		{
-			query = query.Where(x => x.Date.Year == filter.Year);
+			query = query.Where(n => n.Date.Year == filter.Year);
 		}
 			
 		if (filter.Month != null)
 		{
-			query = query.Where(x => x.Date.Month == filter.Month);
+			query = query.Where(n => n.Date.Month == filter.Month);
 		}
 		
 		if (filter.Month != null)
 		{
-			query = query.Where(x => x.Date.Day == filter.Day);
+			query = query.Where(n => n.Date.Day == filter.Day);
 		}
 
 		if (filter.TagIds is { Count: > 0 })
 		{
 			query = query
 				// ReSharper disable once NullableWarningSuppressionIsUsed
-				.Where(x => x.Tags!.Any(t => filter.TagIds.Contains(t.Id)));
+				.Where(n => n.Tags!.Any(t => filter.TagIds.Contains(t.Id)));
 		}
 
 		return query;
