@@ -27,7 +27,6 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 		return await GetDbSet().OrderByDescending(x => x.CreatedAt)
 			.Skip(offset)
 			.Take(limit)
-			.IgnoreAutoIncludes()
 			.ToListAsync();
 	}
 
