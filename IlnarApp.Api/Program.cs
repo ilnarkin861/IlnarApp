@@ -34,6 +34,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 
 builder.Services.AddAntiforgery();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
 
 var authOptions = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
@@ -63,6 +65,7 @@ builder.Services
 	.AddRoleManager<RoleManager<ApplicationRole>>()
 	.AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>()
 	.AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+	.AddSignInManager<ApplicationUser>()
 	.AddDefaultTokenProviders();
 
 builder.Services.AddScoped<INoteTypeRepository, NoteTypeRepository>();
