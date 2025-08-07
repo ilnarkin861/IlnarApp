@@ -1,4 +1,4 @@
-namespace IlnarApp.Application.Services;
+namespace IlnarApp.Application.Services.Jwt;
 
 
 public interface IJwtGenerator

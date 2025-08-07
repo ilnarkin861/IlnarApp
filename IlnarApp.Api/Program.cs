@@ -1,7 +1,7 @@
 using IlnarApp.Api.Middleware;
 using IlnarApp.Application.Options;
 using IlnarApp.Application.Repositories;
-using IlnarApp.Application.Services;
+using IlnarApp.Application.Services.Jwt;
 using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Identity;
 using IlnarApp.Domain.Note;

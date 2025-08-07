@@ -4,7 +4,7 @@ using IlnarApp.Application.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IlnarApp.Application.Services;
+namespace IlnarApp.Application.Services.Jwt;
 
 
 public class JwtGenerator(IOptions<AuthOptions> authOptions) : IJwtGenerator
