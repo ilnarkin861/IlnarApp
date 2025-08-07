@@ -3,10 +3,13 @@ using IlnarApp.Application.Options;
 using IlnarApp.Application.Repositories;
 using IlnarApp.Application.Services;
 using IlnarApp.Domain.Archive;
+using IlnarApp.Domain.Identity;
 using IlnarApp.Domain.Note;
 using IlnarApp.Domain.Tag;
 using IlnarApp.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -51,6 +54,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		};
 	});
 
+builder.Services
+	.AddIdentityCore<ApplicationUser>()
+	.AddRoles<ApplicationRole>()
+	.AddUserManager<UserManager<ApplicationUser>>()
+	.AddRoleManager<RoleManager<ApplicationRole>>()
+	.AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>()
+	.AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+	.AddDefaultTokenProviders();
 
 builder.Services.AddScoped<INoteTypeRepository, NoteTypeRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
@@ -73,6 +84,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
