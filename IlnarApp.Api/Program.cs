@@ -32,6 +32,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
+builder.Services.AddAntiforgery();
+
 builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
 
 var authOptions = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
@@ -73,6 +75,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseAntiforgery();
 
 app.UseMiddleware<ApiExceptionsMiddleware>();
 
