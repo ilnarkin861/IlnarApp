@@ -28,7 +28,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		builder.Entity<IdentityUserToken<Guid>>().ToTable("UserToken");
 
 		builder.Entity<NoteType>();
-		builder.Entity<Note>();
+		builder.Entity<Note>().HasOne(n => n.Archive).WithMany(a => a.Notes).OnDelete(DeleteBehavior.SetNull);
 		builder.Entity<Tag>();
 		builder.Entity<Archive>();
 	}
