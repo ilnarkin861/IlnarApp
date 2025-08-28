@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
 using IlnarApp.Api.Exceptions;
 using IlnarApp.Application.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +30,11 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 		{
 			Success = false
 		};
+		
+		var options = new JsonSerializerOptions {
+			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+		};
+
 
 		switch (exception)
 		{
@@ -39,6 +43,7 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 				break;
 
 			case EntityNotFoundException entityNotFoundException:
+				context.Response.StatusCode = (int) HttpStatusCode.NotFound;
 				response.Messages.Add(entityNotFoundException.Message);
 				break;
                 
@@ -58,7 +63,7 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 				break;
 		}
             
-		var errorResponse = JsonSerializer.Serialize(response);
+		var errorResponse = JsonSerializer.Serialize(response, options);
             
 		await context.Response.WriteAsync(errorResponse, Encoding.UTF8);
 	}
