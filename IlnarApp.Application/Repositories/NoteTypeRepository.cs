@@ -62,8 +62,8 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 		throw new NotImplementedException();
 	}
 
-	public Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
+	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
-		throw new NotImplementedException();
+		return await GetDbSet().CountAsync();
 	}
 }
