@@ -1,6 +1,6 @@
-using System.Net;
 using IlnarApp.Api.Actions;
 using IlnarApp.Api.Exceptions;
+using IlnarApp.Application.Helpers;
 using IlnarApp.Application.Models;
 using IlnarApp.Domain.Note;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +29,19 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 	[Route("")]
 	public async Task<IActionResult> GetListAsync([FromQuery] int offset, [FromQuery] int limit)
 	{
-		return Ok(await noteTypeRepository.GetListAsync(0, 10, null));
+		var notesTypesLimit = limit is 0 or > 10 ? 10 : limit;
+		
+		var noteTypes = await noteTypeRepository.GetListAsync(offset, notesTypesLimit, null);
+		
+		var noteTypesCount = await noteTypeRepository.GetEntitiesCountAsync(null);
+		
+		var response = new PaginationResponse
+		{
+			Data = noteTypes,
+			Pagination = new Paginator(noteTypesCount, offset, notesTypesLimit)
+		};
+		
+		return Ok(response);
 	}
 
 	
