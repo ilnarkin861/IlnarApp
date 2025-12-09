@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using IlnarApp.Api.Exceptions;
+using IlnarApp.Application.Exceptions;
 using IlnarApp.Application.Models;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,4 @@
-namespace IlnarApp.Api.Exceptions;
+namespace IlnarApp.Application.Exceptions;
 
 
 public class EntityNotFoundException(string? message) : Exception(message);

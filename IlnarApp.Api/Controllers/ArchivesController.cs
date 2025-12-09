@@ -1,5 +1,5 @@
 using IlnarApp.Api.Actions;
-using IlnarApp.Api.Exceptions;
+using IlnarApp.Application.Exceptions;
 using IlnarApp.Application.Helpers;
 using IlnarApp.Application.Models;
 using IlnarApp.Domain.Archive;
