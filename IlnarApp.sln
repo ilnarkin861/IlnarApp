@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{5A8C95BF-145D-489C-B944-AD3EB102C38C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlnarApp.Domain", "IlnarApp.Domain\IlnarApp.Domain.csproj", "{0DA85442-C43C-4ACC-A611-ADF74F04DE66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IlnarApp.Infrastructure", "IlnarApp.Infrastructure\IlnarApp.Infrastructure.csproj", "{36DE11E1-EEF8-41B8-94B6-7D4A64782709}"
@@ -16,10 +14,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5A8C95BF-145D-489C-B944-AD3EB102C38C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A8C95BF-145D-489C-B944-AD3EB102C38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A8C95BF-145D-489C-B944-AD3EB102C38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A8C95BF-145D-489C-B944-AD3EB102C38C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0DA85442-C43C-4ACC-A611-ADF74F04DE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0DA85442-C43C-4ACC-A611-ADF74F04DE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DA85442-C43C-4ACC-A611-ADF74F04DE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
