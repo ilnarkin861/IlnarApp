@@ -2,6 +2,7 @@ using IlnarApp.Api.Middleware;
 using IlnarApp.Application.Options;
 using IlnarApp.Application.Repositories;
 using IlnarApp.Application.Services.Jwt;
+using IlnarApp.Application.Services.User;
 using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Identity;
 using IlnarApp.Domain.Note;
@@ -59,8 +60,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		};
 	});
 
-builder.Services
-	.AddIdentityCore<ApplicationUser>()
+
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
+	{
+		options.Password.RequireDigit = false;
+		options.Password.RequireLowercase = false;
+		options.Password.RequireUppercase = false;
+		options.Password.RequireNonAlphanumeric = false;
+		options.Password.RequiredLength = 8;
+	})
+	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddRoles<ApplicationRole>()
 	.AddUserManager<UserManager<ApplicationUser>>()
 	.AddRoleManager<RoleManager<ApplicationRole>>()
@@ -74,6 +83,7 @@ builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IArchiveRepository, ArchiveRepository>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(setup =>
