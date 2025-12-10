@@ -26,7 +26,7 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 		context.Response.ContentType = "application/json";
 		context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
 
-		var response = new DefaultResponse
+		var response = new ResponseData
 		{
 			Success = false
 		};

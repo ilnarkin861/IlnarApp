@@ -35,7 +35,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 
 		var archivesCount = await archiveRepository.GetEntitiesCountAsync(null);
 
-		var response = new PaginationResponse
+		var response = new PaginationData
 		{
 			Data = tags,
 			Pagination = new Paginator(archivesCount, offset, archivesLimit)
@@ -48,9 +48,9 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[HttpPost]
 	[Route("add")]
 	[ValidationAction]
-	public async Task<IActionResult> InsertAsync([FromBody] ArchiveDto archiveDto)
+	public async Task<IActionResult> InsertAsync([FromBody] ArchiveData archiveData)
 	{
-		var archive = new Archive{Title = archiveDto.Title};
+		var archive = new Archive{Title = archiveData.Title};
 		
 		return Ok(await archiveRepository.InsertAsync(archive));
 	}
@@ -59,7 +59,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[HttpPut]
 	[Route("edit/{id:guid}")]
 	[ValidationAction]
-	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] ArchiveDto archiveDto)
+	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] ArchiveData archiveData)
 	{
 		var archive = await GetById(id);
 
@@ -68,7 +68,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 			throw new EntityNotFoundException("Архив не найден");
 		}
 		
-		archive.Title = archiveDto.Title;
+		archive.Title = archiveData.Title;
 		
 		return Ok(await archiveRepository.UpdateAsync(archive));
 	}
@@ -91,7 +91,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 
 		var errorsList = new List<string> { message };
 
-		var response = new DefaultResponse
+		var response = new ResponseData
 		{
 			Messages = errorsList,
 			Success = result

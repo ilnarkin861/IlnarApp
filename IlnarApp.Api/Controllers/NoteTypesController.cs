@@ -35,7 +35,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 		
 		var noteTypesCount = await noteTypeRepository.GetEntitiesCountAsync(null);
 		
-		var response = new PaginationResponse
+		var response = new PaginationData
 		{
 			Data = noteTypes,
 			Pagination = new Paginator(noteTypesCount, offset, notesTypesLimit)
@@ -48,9 +48,9 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 	[HttpPost]
 	[Route("add")]
 	[ValidationAction]
-	public async Task<IActionResult> InsertAsync([FromBody] NoteTypeDto noteTypeDto)
+	public async Task<IActionResult> InsertAsync([FromBody] NoteTypeData noteTypeData)
 	{
-		var noteType = new NoteType{Title = noteTypeDto.Title};
+		var noteType = new NoteType{Title = noteTypeData.Title};
 		
 		return Ok(await noteTypeRepository.InsertAsync(noteType));
 	}
@@ -59,7 +59,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 	[HttpPut]
 	[Route("edit/{id:guid}")]
 	[ValidationAction]
-	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] NoteTypeDto noteTypeDto)
+	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] NoteTypeData noteTypeData)
 	{
 		var noteType = await GetById(id);
 
@@ -68,7 +68,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 			throw new EntityNotFoundException("Тип записи не найден");
 		}
 		
-		noteType.Title = noteTypeDto.Title;
+		noteType.Title = noteTypeData.Title;
 		
 		return Ok(await noteTypeRepository.UpdateAsync(noteType));
 	}
@@ -91,7 +91,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 
 		var errorsList = new List<string> { message };
 
-		var response = new DefaultResponse
+		var response = new ResponseData
 		{
 			Messages = errorsList,
 			Success = result

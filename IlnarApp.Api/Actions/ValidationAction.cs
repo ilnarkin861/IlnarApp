@@ -20,7 +20,7 @@ public class ValidationAction : ActionFilterAttribute
 			errorsList.AddRange(value.Errors.Select(error => error.ErrorMessage));
 		}
 
-		var response = new DefaultResponse
+		var response = new ResponseData
 		{
 			Success = false,
 			Messages = errorsList

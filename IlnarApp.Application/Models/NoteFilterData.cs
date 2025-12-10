@@ -4,7 +4,7 @@ using IlnarApp.Domain.Tag;
 namespace IlnarApp.Application.Models;
 
 
-public class NoteFilterRequest : IEntityFilter
+public class NoteFilterData : IEntityFilter
 {
 	public Guid? NoteTypeId { get; set; }
 	public int? Year { get; set; }

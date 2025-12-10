@@ -35,7 +35,7 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 
 		var tagsCount = await tagRepository.GetEntitiesCountAsync(null);
 
-		var response = new PaginationResponse
+		var response = new PaginationData
 		{
 			Data = tags,
 			Pagination = new Paginator(tagsCount, offset, tagsLimit)
@@ -91,7 +91,7 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 
 		var errorsList = new List<string> { message };
 
-		var response = new DefaultResponse
+		var response = new ResponseData
 		{
 			Messages = errorsList,
 			Success = result
