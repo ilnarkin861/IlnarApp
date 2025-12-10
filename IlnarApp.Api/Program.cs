@@ -68,9 +68,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 		options.Password.RequireUppercase = false;
 		options.Password.RequireNonAlphanumeric = false;
 		options.Password.RequiredLength = 8;
-	})
-	.AddEntityFrameworkStores<ApplicationDbContext>()
-	.AddRoles<ApplicationRole>()
+	}).AddRoles<ApplicationRole>()
 	.AddUserManager<UserManager<ApplicationUser>>()
 	.AddRoleManager<RoleManager<ApplicationRole>>()
 	.AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>()
