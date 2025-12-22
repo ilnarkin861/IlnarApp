@@ -1,6 +1,7 @@
 using IlnarApp.Application.Exceptions;
 using IlnarApp.Application.Services.Jwt;
 using IlnarApp.Domain.Identity;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -44,11 +45,27 @@ public class UserService(
 	}
 	
 
-	public Task<string> SignIn(string email, string password)
+	public async Task<string> SignIn(string email, string password)
 	{
-		throw new NotImplementedException();
+		
+		var user = await userManager.FindByEmailAsync(email);
+		
+		if (user == null)
+		{
+			throw new ApiException("Такой пользоватеь не существует в системе");
+		}
+		
+		var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
+		
+		if (!result.Succeeded)
+		{
+			throw new AuthenticationFailureException("Неверный логин или пароль");
+		}
+
+		return jwtGenerator.GenerateJwt(user.Id.ToString());
 	}
 
+	
 	public Task<bool> ChangePassword(string oldPassword, string newPassword)
 	{
 		throw new NotImplementedException();
