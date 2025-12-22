@@ -92,7 +92,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		var query = GetDbSet().AsQueryable();
 
 		if (entityFilter == null) return query;
-		var filter = (NoteFilterData)entityFilter;
+		var filter = (NoteFilterRequest)entityFilter;
 		
 		if (filter.NoteTypeId != null)
 		{

@@ -48,9 +48,9 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 	[HttpPost]
 	[Route("add")]
 	[ValidationAction]
-	public async Task<IActionResult> InsertAsync([FromBody] TagData tagData)
+	public async Task<IActionResult> InsertAsync([FromBody] TagRequest tagRequest)
 	{
-		var noteType = new Tag{Title = tagData.Title};
+		var noteType = new Tag{Title = tagRequest.Title};
 		
 		return Ok(await tagRepository.InsertAsync(noteType));
 	}
@@ -59,7 +59,7 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 	[HttpPut]
 	[Route("edit/{id:guid}")]
 	[ValidationAction]
-	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] TagData tagData)
+	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] TagRequest tagRequest)
 	{
 		var tag = await GetById(id);
 
@@ -68,7 +68,7 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 			throw new EntityNotFoundException("Тег не найден");
 		}
 		
-		tag.Title = tagData.Title;
+		tag.Title = tagRequest.Title;
 		
 		return Ok(await tagRepository.UpdateAsync(tag));
 	}

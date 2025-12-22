@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace IlnarApp.Application.Models;
 
-public class UserData
+public class UserRegisterRequest
 {
     [Required(ErrorMessage = "Электронный адрес не должен быть пустым")]
     [RegularExpression(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){1,4})+)$", ErrorMessage = "Некорректный электронный адрес")]

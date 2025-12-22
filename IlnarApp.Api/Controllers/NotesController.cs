@@ -34,7 +34,7 @@ public class NotesController(
 	[HttpGet]
 	[Route("")]
 	public async Task<IActionResult> GetListAsync([FromQuery] int offset, [FromQuery] int limit, 
-		[FromQuery] NoteFilterData filter)
+		[FromQuery] NoteFilterRequest filter)
 	{
 		var notesLimit = limit is 0 or > 10 ? 10 : limit;
 
@@ -55,32 +55,32 @@ public class NotesController(
 	[HttpPost]
 	[Route("add")]
 	[ValidationAction]
-	public async Task<IActionResult> InsertAsync([FromBody] NoteData noteData)
+	public async Task<IActionResult> InsertAsync([FromBody] NoteRequest noteRequest)
 	{
-		var noteType = await noteTypeRepository.GetAsync(noteData.NoteType.Id, null);
+		var noteType = await noteTypeRepository.GetAsync(noteRequest.NoteType.Id, null);
 
 		if (noteType == null) throw new EntityNotFoundException("Тип записи не найден");
 
 		var note = new Note
 		{
-			Title = noteData.Title,
-			Text = noteData.Text,
+			Title = noteRequest.Title,
+			Text = noteRequest.Text,
 			NoteType = noteType,
-			Date = noteData.Date
+			Date = noteRequest.Date
 		};
 		
-		if (noteData.Archive != null)
+		if (noteRequest.Archive != null)
 		{
-			var archive = await archiveRepository.GetAsync(noteData.Archive.Id, null);
+			var archive = await archiveRepository.GetAsync(noteRequest.Archive.Id, null);
 
 			if (archive != null) note.Archive = archive;
 		}
 		
-		if (noteData.Tags is not { Count: > 0 }) return Ok(await noteRepository.InsertAsync(note));
+		if (noteRequest.Tags is not { Count: > 0 }) return Ok(await noteRepository.InsertAsync(note));
 		
 		var tags = new List<Tag>();
 
-		foreach (var item in noteData.Tags)
+		foreach (var item in noteRequest.Tags)
 		{
 			var tag = await tagRepository.GetAsync(item.Id, null);
 			if (tag != null) tags.Add(tag);
@@ -95,7 +95,7 @@ public class NotesController(
 	[HttpPut]
 	[Route("edit/{id:guid}")]
 	[ValidationAction]
-	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] NoteData noteData)
+	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] NoteRequest noteRequest)
 	{
 		var note = await GetById(id);
 
@@ -104,30 +104,30 @@ public class NotesController(
 			throw new EntityNotFoundException("Запись не найдена");
 		}
 		
-		var noteType = await noteTypeRepository.GetAsync(noteData.NoteType.Id, null);
+		var noteType = await noteTypeRepository.GetAsync(noteRequest.NoteType.Id, null);
 
 		if (noteType == null) throw new EntityNotFoundException("Тип записи не найден");
 		
-		note.Title = noteData.Title;
-		note.Text = noteData.Text;
-		note.Date = noteData.Date;
+		note.Title = noteRequest.Title;
+		note.Text = noteRequest.Text;
+		note.Date = noteRequest.Date;
 		note.NoteType = noteType;
-		note.Archive = noteData.Archive;
+		note.Archive = noteRequest.Archive;
 		
-		if (noteData.Archive != null)
+		if (noteRequest.Archive != null)
 		{
-			var archive = await archiveRepository.GetAsync(noteData.Archive.Id, null);
+			var archive = await archiveRepository.GetAsync(noteRequest.Archive.Id, null);
 
 			if (archive != null) note.Archive = archive;
 		}
 		
 		note.Tags?.Clear();
 		
-		if (noteData.Tags is not { Count: > 0 }) return Ok(await noteRepository.UpdateAsync(note));
+		if (noteRequest.Tags is not { Count: > 0 }) return Ok(await noteRepository.UpdateAsync(note));
 		
 		var tags = new List<Tag>();
 		
-		foreach (var item in noteData.Tags)
+		foreach (var item in noteRequest.Tags)
 		{
 			var tag = await tagRepository.GetAsync(item.Id, null);
 			if (tag != null) tags.Add(tag);

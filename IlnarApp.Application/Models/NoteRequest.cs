@@ -7,7 +7,7 @@ using IlnarApp.Domain.Tag;
 namespace IlnarApp.Application.Models;
 
 
-public class NoteData
+public class NoteRequest
 {
 	public string? Title { get; set; }
 	

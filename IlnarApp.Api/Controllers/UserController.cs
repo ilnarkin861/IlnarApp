@@ -12,9 +12,9 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("register")]
     [ValidationAction]
-    public async Task<IActionResult> UserRegister([FromBody] UserData userData)
+    public async Task<IActionResult> UserRegister([FromBody] UserRegisterRequest userRegisterRequest)
     {
-        await userService.SignUp(userData.Email, userData.Password, userData.PinCode);
+        await userService.SignUp(userRegisterRequest.Email, userRegisterRequest.Password, userRegisterRequest.PinCode);
         
         return Ok(new ResponseData{Success = true, Messages = ["Пользователь успешно добавлен"] });
     }
@@ -23,9 +23,9 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("login")]
     [ValidationAction]
-    public async Task<IActionResult> UserLogin([FromBody] UserLoginData userLoginData)
+    public async Task<IActionResult> UserLogin([FromBody] UserLoginRequest userLoginRequest)
     {
-        var token = await userService.SignIn(userLoginData.Email, userLoginData.Password);
+        var token = await userService.SignIn(userLoginRequest.Email, userLoginRequest.Password);
         
         return Ok(new UserTokenData{Token = token});
     }

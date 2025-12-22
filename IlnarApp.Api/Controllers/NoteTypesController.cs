@@ -48,9 +48,9 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 	[HttpPost]
 	[Route("add")]
 	[ValidationAction]
-	public async Task<IActionResult> InsertAsync([FromBody] NoteTypeData noteTypeData)
+	public async Task<IActionResult> InsertAsync([FromBody] NoteTypeRequest noteTypeRequest)
 	{
-		var noteType = new NoteType{Title = noteTypeData.Title};
+		var noteType = new NoteType{Title = noteTypeRequest.Title};
 		
 		return Ok(await noteTypeRepository.InsertAsync(noteType));
 	}
@@ -59,7 +59,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 	[HttpPut]
 	[Route("edit/{id:guid}")]
 	[ValidationAction]
-	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] NoteTypeData noteTypeData)
+	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] NoteTypeRequest noteTypeRequest)
 	{
 		var noteType = await GetById(id);
 
@@ -68,7 +68,7 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 			throw new EntityNotFoundException("Тип записи не найден");
 		}
 		
-		noteType.Title = noteTypeData.Title;
+		noteType.Title = noteTypeRequest.Title;
 		
 		return Ok(await noteTypeRepository.UpdateAsync(noteType));
 	}

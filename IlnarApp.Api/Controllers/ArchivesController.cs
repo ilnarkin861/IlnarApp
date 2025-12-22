@@ -48,9 +48,9 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[HttpPost]
 	[Route("add")]
 	[ValidationAction]
-	public async Task<IActionResult> InsertAsync([FromBody] ArchiveData archiveData)
+	public async Task<IActionResult> InsertAsync([FromBody] ArchiveRequest archiveRequest)
 	{
-		var archive = new Archive{Title = archiveData.Title};
+		var archive = new Archive{Title = archiveRequest.Title};
 		
 		return Ok(await archiveRepository.InsertAsync(archive));
 	}
@@ -59,7 +59,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[HttpPut]
 	[Route("edit/{id:guid}")]
 	[ValidationAction]
-	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] ArchiveData archiveData)
+	public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] ArchiveRequest archiveRequest)
 	{
 		var archive = await GetById(id);
 
@@ -68,7 +68,7 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 			throw new EntityNotFoundException("Архив не найден");
 		}
 		
-		archive.Title = archiveData.Title;
+		archive.Title = archiveRequest.Title;
 		
 		return Ok(await archiveRepository.UpdateAsync(archive));
 	}
