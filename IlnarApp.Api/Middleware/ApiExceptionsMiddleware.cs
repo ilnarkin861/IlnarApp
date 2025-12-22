@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using IlnarApp.Application.Exceptions;
 using IlnarApp.Application.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 namespace IlnarApp.Api.Middleware;
@@ -45,6 +46,11 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 			case EntityNotFoundException entityNotFoundException:
 				context.Response.StatusCode = (int) HttpStatusCode.NotFound;
 				response.Messages.Add(entityNotFoundException.Message);
+				break;
+			
+			case AuthenticationFailureException authenticationFailureException:
+				context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+				response.Messages.Add(authenticationFailureException.Message);
 				break;
                 
 			case IOException:
