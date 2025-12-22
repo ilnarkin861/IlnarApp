@@ -18,5 +18,16 @@ public class UserController(IUserService userService) : BaseController
         
         return Ok(new ResponseData{Success = true, Messages = ["Пользователь успешно добавлен"] });
     }
+
+
+    [HttpPost]
+    [Route("login")]
+    [ValidationAction]
+    public async Task<IActionResult> UserLogin([FromBody] UserLoginData userLoginData)
+    {
+        var token = await userService.SignIn(userLoginData.Email, userLoginData.Password);
+        
+        return Ok(new UserTokenData{Token = token});
+    }
     
 }
