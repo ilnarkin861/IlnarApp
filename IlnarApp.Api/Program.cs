@@ -1,3 +1,4 @@
+using System.Text;
 using IlnarApp.Api.Middleware;
 using IlnarApp.Application.Options;
 using IlnarApp.Application.Repositories;
@@ -59,6 +60,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateIssuerSigningKey = true
 		};
 	});
+
+builder.Services.AddAuthorization();
 
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
