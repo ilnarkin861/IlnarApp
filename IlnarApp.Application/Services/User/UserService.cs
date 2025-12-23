@@ -51,7 +51,7 @@ public class UserService(
 		
 		if (user == null)
 		{
-			throw new ApiException("Такой пользоватеь не существует");
+			throw new ApiException("Пользователь не найден");
 		}
 		
 		var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
@@ -98,11 +98,28 @@ public class UserService(
 		
 		return user;
 	}
+	
 
-	public Task<bool> ChangeEmail(string oldEmail, string newEmail)
+	public async Task<bool> ChangeEmail(string oldEmail, string newEmail)
 	{
-		throw new NotImplementedException();
+		var user = await GetCurrentUser();
+
+		if (user == null)
+		{
+			throw new EntityNotFoundException("Пользователь не найден");
+		}
+		
+		var emailResult = await userManager.SetEmailAsync(user, newEmail);
+		var userNameResult = await userManager.SetUserNameAsync(user, newEmail);
+
+		if (!userNameResult.Succeeded || !emailResult.Succeeded)
+		{
+			throw new ApiException("Ошибка при изменении электронного адреса");
+		}
+
+		return true;
 	}
+	
 
 	public Task<bool> ChangePinCode(string oldPinCode, string newPinCode)
 	{
