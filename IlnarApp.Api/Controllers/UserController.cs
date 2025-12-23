@@ -44,6 +44,18 @@ public class UserController(IUserService userService) : BaseController
     }
     
     
+    [HttpPost]
+    [Route("email-change")]
+    [ValidationAction]
+    [Authorize]
+    public async Task<IActionResult> EmailChange([FromBody] EmailChangeRequest request)
+    {
+        await userService.ChangeEmail(request.Email, request.Email);
+        
+        return Ok(new ResponseData{Success = true, Messages = ["Электронный адрес успешно изменен"] });
+    }
+    
+    
     [HttpGet]
     [Route("info")]
     [Authorize]
