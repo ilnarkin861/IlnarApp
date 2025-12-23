@@ -59,7 +59,7 @@ public class UserController(IUserService userService) : BaseController
     
     [HttpGet]
     [Route("info")]
-    public async Task<IActionResult> PasswordReset()
+    public async Task<IActionResult> UserInfo()
     {
         var user = await userService.GetUserInfo();
         
