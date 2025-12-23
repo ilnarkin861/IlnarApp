@@ -9,7 +9,7 @@ public interface IUserService
 	Task<string> SignIn(string email, string password);
 	Task<bool> ChangePassword(string oldPassword, string newPassword);
 	Task<ApplicationUser> GetUserInfo();
-	Task<bool> ChangeEmail(string oldEmail, string newEmail);
+	Task<bool> ChangeEmail(string newEmail);
 	Task<bool> ChangePinCode(string oldPinCode, string newPinCode);
 	Task<bool> CheckPinCode(string pinCode);
 }

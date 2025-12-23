@@ -100,7 +100,7 @@ public class UserService(
 	}
 	
 
-	public async Task<bool> ChangeEmail(string oldEmail, string newEmail)
+	public async Task<bool> ChangeEmail(string newEmail)
 	{
 		var user = await GetCurrentUser();
 

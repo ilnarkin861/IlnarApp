@@ -8,11 +8,13 @@ namespace IlnarApp.Api.Controllers;
 
 
 
+[Authorize]
 public class UserController(IUserService userService) : BaseController
 {
     [HttpPost]
     [Route("register")]
     [ValidationAction]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] UserRegisterRequest userRegisterRequest)
     {
         await userService.SignUp(userRegisterRequest.Email, userRegisterRequest.Password, userRegisterRequest.PinCode);
@@ -24,6 +26,7 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("login")]
     [ValidationAction]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] UserLoginRequest userLoginRequest)
     {
         var token = await userService.SignIn(userLoginRequest.Email, userLoginRequest.Password);
@@ -35,7 +38,6 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("password-reset")]
     [ValidationAction]
-    [Authorize]
     public async Task<IActionResult> PasswordReset([FromBody] PasswordChangeRequest request)
     {
         await userService.ChangePassword(request.OldPassword, request.NewPassword);
@@ -47,10 +49,9 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("email-change")]
     [ValidationAction]
-    [Authorize]
     public async Task<IActionResult> EmailChange([FromBody] EmailChangeRequest request)
     {
-        await userService.ChangeEmail(request.Email, request.Email);
+        await userService.ChangeEmail(request.Email);
         
         return Ok(new ResponseData{Success = true, Messages = ["Электронный адрес успешно изменен"] });
     }
@@ -58,7 +59,6 @@ public class UserController(IUserService userService) : BaseController
     
     [HttpGet]
     [Route("info")]
-    [Authorize]
     public async Task<IActionResult> PasswordReset()
     {
         var user = await userService.GetUserInfo();
