@@ -18,7 +18,6 @@ public class UserService(
 {
 	public async Task<bool> SignUp(string email, string password, string pinCode)
 	{
-		
 		var userExists = await userManager.FindByEmailAsync(email);
 
 		if (userExists != null)
@@ -88,9 +87,16 @@ public class UserService(
 	}
 
 	
-	public Task<string> GetEmail()
+	public async Task<ApplicationUser> GetUserInfo()
 	{
-		throw new NotImplementedException();
+		var user = await GetCurrentUser();
+		
+		if (user == null)
+		{
+			throw new EntityNotFoundException("Пользователь не найден");
+		}
+		
+		return user;
 	}
 
 	public Task<bool> ChangeEmail(string oldEmail, string newEmail)
