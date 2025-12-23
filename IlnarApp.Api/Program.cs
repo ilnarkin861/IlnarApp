@@ -1,4 +1,3 @@
-using System.Text;
 using IlnarApp.Api.Middleware;
 using IlnarApp.Application.Options;
 using IlnarApp.Application.Repositories;
@@ -18,8 +17,8 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 
-var builder = WebApplication.CreateBuilder(args);
 
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(
 	options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
@@ -93,7 +92,7 @@ builder.Services.AddSwaggerGen(setup =>
 	var jwtSecurityScheme = new OpenApiSecurityScheme
 	{
 		BearerFormat = "JWT",
-		Name = "JWT Authentication",
+		Name = "JWT Bearer",
 		In = ParameterLocation.Header,
 		Type = SecuritySchemeType.Http,
 		Scheme = JwtBearerDefaults.AuthenticationScheme,
