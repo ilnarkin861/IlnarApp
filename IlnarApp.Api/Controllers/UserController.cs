@@ -1,6 +1,7 @@
 using IlnarApp.Api.Actions;
 using IlnarApp.Application.Models;
 using IlnarApp.Application.Services.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IlnarApp.Api.Controllers;
@@ -12,7 +13,7 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("register")]
     [ValidationAction]
-    public async Task<IActionResult> UserRegister([FromBody] UserRegisterRequest userRegisterRequest)
+    public async Task<IActionResult> Register([FromBody] UserRegisterRequest userRegisterRequest)
     {
         await userService.SignUp(userRegisterRequest.Email, userRegisterRequest.Password, userRegisterRequest.PinCode);
         
@@ -23,11 +24,24 @@ public class UserController(IUserService userService) : BaseController
     [HttpPost]
     [Route("login")]
     [ValidationAction]
-    public async Task<IActionResult> UserLogin([FromBody] UserLoginRequest userLoginRequest)
+    public async Task<IActionResult> Login([FromBody] UserLoginRequest userLoginRequest)
     {
         var token = await userService.SignIn(userLoginRequest.Email, userLoginRequest.Password);
         
         return Ok(new UserTokenData{Token = token});
     }
+
+
+    [HttpPost]
+    [Route("password-reset")]
+    [ValidationAction]
+    [Authorize]
+    public async Task<IActionResult> PasswordReset([FromBody] PasswordChangeRequest request)
+    {
+        await userService.ChangePassword(request.OldPassword, request.NewPassword);
+        
+        return Ok(new ResponseData{Success = true, Messages = ["Пароль успешно изменен"] });
+    }
+    
     
 }
