@@ -1,10 +1,10 @@
+using System.Security.Claims;
 using IlnarApp.Application.Exceptions;
 using IlnarApp.Application.Services.Jwt;
 using IlnarApp.Domain.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-
 
 namespace IlnarApp.Application.Services.User;
 
@@ -14,7 +14,7 @@ public class UserService(
 	IUserStore<ApplicationUser> userStore,
 	SignInManager<ApplicationUser> signInManager,
 	IJwtGenerator jwtGenerator,
-	IHttpContextAccessor contextAccessor) : IUserService
+	IHttpContextAccessor httpContextAccessor) : IUserService
 {
 	public async Task<bool> SignUp(string email, string password, string pinCode)
 	{
@@ -52,7 +52,7 @@ public class UserService(
 		
 		if (user == null)
 		{
-			throw new ApiException("Такой пользоватеь не существует в системе");
+			throw new ApiException("Такой пользоватеь не существует");
 		}
 		
 		var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
@@ -61,16 +61,33 @@ public class UserService(
 		{
 			throw new AuthenticationFailureException("Неверный логин или пароль");
 		}
-
+		
 		return jwtGenerator.GenerateJwt(user.Id.ToString());
 	}
 
 	
-	public Task<bool> ChangePassword(string oldPassword, string newPassword)
+	public async Task<bool> ChangePassword(string oldPassword, string newPassword)
 	{
-		throw new NotImplementedException();
+		var user = await GetCurrentUser();
+
+		if (user == null)
+		{
+			throw new EntityNotFoundException("Пользователь не найден");
+		}
+		
+		var passwordResult = await userManager.CheckPasswordAsync(user, oldPassword);
+
+		if (!passwordResult)
+		{
+			throw new ApiException("Неверный старый пароль");
+		}
+		
+		var result = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+		
+		return result.Succeeded;
 	}
 
+	
 	public Task<string> GetEmail()
 	{
 		throw new NotImplementedException();
@@ -90,4 +107,20 @@ public class UserService(
 	{
 		throw new NotImplementedException();
 	}
+
+
+	private async Task<ApplicationUser?> GetCurrentUser()
+	{
+		var principal = httpContextAccessor.HttpContext?.User;
+
+		var identifier = principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+		
+		if (identifier != null)
+		{
+			return await userManager.FindByIdAsync(identifier);
+		}
+
+		return null;
+	}
+
 }
