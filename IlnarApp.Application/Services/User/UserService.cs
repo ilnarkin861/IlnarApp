@@ -100,14 +100,34 @@ public class UserService(
 	}
 	
 
-	public Task<bool> ChangePinCode(string oldPinCode, string newPinCode)
+	public async Task<bool> ChangePinCode(string pinCode)
 	{
-		throw new NotImplementedException();
+		var user = await GetCurrentUser();
+		
+		user!.PinCode = pinCode;
+		
+		var result = await userManager.UpdateAsync(user);
+
+		if (!result.Succeeded)
+		{
+			throw new ApiException("Ошибка при изменении PIN-кода");
+		}
+		
+		return result.Succeeded;
 	}
 
-	public Task<bool> CheckPinCode(string pinCode)
+	public async Task<bool> CheckPinCode(string pinCode)
 	{
-		throw new NotImplementedException();
+		var user = await GetCurrentUser();
+		
+		var result = user!.PinCode == pinCode;
+
+		if (!result)
+		{
+			throw new ApiException("Неверный PIN-код");
+		}
+		
+		return result;
 	}
 
 
@@ -126,7 +146,6 @@ public class UserService(
 			throw new EntityNotFoundException("Пользователь не найден");
 		}
 
-		return null;
+		return user;
 	}
-
 }
