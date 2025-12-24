@@ -8,7 +8,6 @@ namespace IlnarApp.Api.Controllers;
 
 
 
-[Authorize]
 public class UserController(IUserService userService) : BaseController
 {
     [HttpPost]
