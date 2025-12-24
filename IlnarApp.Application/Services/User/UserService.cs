@@ -46,42 +46,31 @@ public class UserService(
 
 	public async Task<string> SignIn(string email, string password)
 	{
-		
 		var user = await userManager.FindByEmailAsync(email);
 		
-		if (user == null)
-		{
-			throw new ApiException("Пользователь не найден");
-		}
-		
-		var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
+		var result = await signInManager.CheckPasswordSignInAsync(user!, password, false);
 		
 		if (!result.Succeeded)
 		{
 			throw new AuthenticationFailureException("Неверный логин или пароль");
 		}
 		
-		return jwtGenerator.GenerateJwt(user.Id.ToString());
+		return jwtGenerator.GenerateJwt(user!.Id.ToString());
 	}
 
 	
 	public async Task<bool> ChangePassword(string oldPassword, string newPassword)
 	{
 		var user = await GetCurrentUser();
-
-		if (user == null)
-		{
-			throw new EntityNotFoundException("Пользователь не найден");
-		}
 		
-		var passwordResult = await userManager.CheckPasswordAsync(user, oldPassword);
+		var passwordResult = await userManager.CheckPasswordAsync(user!, oldPassword);
 
 		if (!passwordResult)
 		{
 			throw new ApiException("Неверный старый пароль");
 		}
 		
-		var result = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+		var result = await userManager.ChangePasswordAsync(user!, oldPassword, newPassword);
 		
 		return result.Succeeded;
 	}
@@ -91,26 +80,16 @@ public class UserService(
 	{
 		var user = await GetCurrentUser();
 		
-		if (user == null)
-		{
-			throw new EntityNotFoundException("Пользователь не найден");
-		}
-		
-		return user;
+		return user!;
 	}
 	
 
 	public async Task<bool> ChangeEmail(string newEmail)
 	{
 		var user = await GetCurrentUser();
-
-		if (user == null)
-		{
-			throw new EntityNotFoundException("Пользователь не найден");
-		}
 		
-		var emailResult = await userManager.SetEmailAsync(user, newEmail);
-		var userNameResult = await userManager.SetUserNameAsync(user, newEmail);
+		var emailResult = await userManager.SetEmailAsync(user!, newEmail);
+		var userNameResult = await userManager.SetUserNameAsync(user!, newEmail);
 
 		if (!userNameResult.Succeeded || !emailResult.Succeeded)
 		{
@@ -137,10 +116,14 @@ public class UserService(
 		var principal = httpContextAccessor.HttpContext?.User;
 
 		var identifier = principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		if (identifier == null) return null;
 		
-		if (identifier != null)
+		var  user = await userManager.FindByIdAsync(identifier);
+			
+		if (user == null)
 		{
-			return await userManager.FindByIdAsync(identifier);
+			throw new EntityNotFoundException("Пользователь не найден");
 		}
 
 		return null;
