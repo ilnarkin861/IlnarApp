@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IlnarApp.Api.Middleware;
 
+
 public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptionsMiddleware> logger)
 {
 	public async Task InvokeAsync(HttpContext context)
@@ -22,6 +23,7 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 		}
 	}
 	
+	
 	private async Task HandleExceptionAsync(HttpContext context, Exception exception)
 	{
 		context.Response.ContentType = "application/json";
@@ -35,8 +37,7 @@ public class ApiExceptionsMiddleware(RequestDelegate next, ILogger<ApiExceptions
 		var options = new JsonSerializerOptions {
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 		};
-
-
+		
 		switch (exception)
 		{
 			case ApiException restException:

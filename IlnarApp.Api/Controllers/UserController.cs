@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace IlnarApp.Api.Controllers;
 
 
-
 public class UserController(IUserService userService) : BaseController
 {
     [HttpPost]

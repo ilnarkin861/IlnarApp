@@ -115,6 +115,7 @@ public class UserService(
 		
 		return result.Succeeded;
 	}
+	
 
 	public async Task<bool> CheckPinCode(string pinCode)
 	{

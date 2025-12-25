@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace IlnarApp.Infrastructure;
 
+
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
 	: IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {

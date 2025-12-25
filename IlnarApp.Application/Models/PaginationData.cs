@@ -1,7 +1,6 @@
 using System.Collections;
 using IlnarApp.Application.Helpers;
 
-
 namespace IlnarApp.Application.Models;
 
 

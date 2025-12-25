@@ -23,12 +23,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(
 	options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
-
 builder.Services.AddSerilog(lc => lc
 	.WriteTo.Console()
 	.WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "Logs/log-.log"), 
 		LogEventLevel.Error, rollingInterval: RollingInterval.Day));
-
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -61,7 +59,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	});
 
 builder.Services.AddAuthorization();
-
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
 	{
@@ -121,14 +118,11 @@ app.UseAntiforgery();
 app.UseMiddleware<ApiExceptionsMiddleware>();
 
 // Configure the HTTP request pipeline.
-/*if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
-}*/
-
-app.UseSwagger();
-app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

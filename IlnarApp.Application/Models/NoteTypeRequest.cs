@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-
 namespace IlnarApp.Application.Models;
 
 

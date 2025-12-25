@@ -30,7 +30,6 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.FirstOrDefaultAsync(n => n.Id == id);
 	}
 
-
 	
 	public async Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
@@ -54,38 +53,45 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 		return entity.Entity;
 	}
 
+	
 	public Task<Note> UpdateAsync(IEnumerable<Note> entities)
 	{
 		throw new NotImplementedException();
 	}
+	
 
 	public async Task<bool> DeleteAsync(Note entity)
 	{
 		context.Remove(entity);
 		return await context.SaveChangesAsync() > 0;
 	}
+	
 
 	public Task<bool> DeleteAsync(IEnumerable<Note> entities)
 	{
 		throw new NotImplementedException();
 	}
 
+	
 	public Task<bool> HasPreviousEntities(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
+	
 
 	public Task<bool> HasNextEntities(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		throw new NotImplementedException();
 	}
 
+	
 	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
 		if (entityFilter == null) return await GetDbSet().CountAsync();
 
 		return await BuildQuery(entityFilter).CountAsync();
 	}
+	
 	
 	private IQueryable<Note> BuildQuery(IEntityFilter? entityFilter)
 	{

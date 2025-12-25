@@ -2,6 +2,7 @@ namespace IlnarApp.Domain.Archive;
 
 using Note;
 
+
 public class Archive : Entity
 {
 	public required string Title { get; set; }
