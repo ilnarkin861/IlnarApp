@@ -131,6 +131,16 @@ public class UserService(
 		return result;
 	}
 
+	public void IsAuthenticated()
+	{
+		var principal = httpContextAccessor.HttpContext?.User;
+
+		if (principal?.Identity is { IsAuthenticated: false })
+		{
+			throw new AuthenticationFailureException("Не авторизован");
+		}
+	}
+
 
 	private async Task<ApplicationUser?> GetCurrentUser()
 	{
