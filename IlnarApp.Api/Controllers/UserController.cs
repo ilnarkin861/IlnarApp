@@ -84,4 +84,15 @@ public class UserController(IUserService userService) : BaseController
         
         return Ok(new ResponseData{Success = true, Messages = ["PIN-код верный"] });
     }
+    
+    
+    [HttpGet]
+    [Route("auth-check")]
+    [AllowAnonymous]
+    public IActionResult AuthCheck()
+    {
+        userService.IsAuthenticated();
+        
+        return Ok();
+    }
 }

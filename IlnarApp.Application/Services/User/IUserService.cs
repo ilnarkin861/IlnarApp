@@ -12,4 +12,5 @@ public interface IUserService
 	Task<bool> ChangeEmail(string newEmail);
 	Task<bool> ChangePinCode(string pinCode);
 	Task<bool> CheckPinCode(string pinCode);
+	void IsAuthenticated();
 }
