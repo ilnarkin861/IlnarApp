@@ -93,6 +93,6 @@ public class UserController(IUserService userService) : BaseController
     {
         userService.IsAuthenticated();
         
-        return Ok();
+        return Ok(new ResponseData{Success = true, Messages = {"Authorized"}});
     }
 }
