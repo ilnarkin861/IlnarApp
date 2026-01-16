@@ -47,8 +47,13 @@ public class UserService(
 	public async Task<string> SignIn(string email, string password)
 	{
 		var user = await userManager.FindByEmailAsync(email);
+
+		if (user == null)
+		{
+			throw new ApiException("Пользователь не найден");
+		}
 		
-		var result = await signInManager.CheckPasswordSignInAsync(user!, password, false);
+		var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
 		
 		if (!result.Succeeded)
 		{
