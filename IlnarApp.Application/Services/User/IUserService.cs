@@ -5,12 +5,10 @@ namespace IlnarApp.Application.Services.User;
 
 public interface IUserService
 {
-	Task<bool> SignUp(string email, string password, string pinCode);
+	Task<bool> SignUp(string email, string password);
 	Task<string> SignIn(string email, string password);
 	Task<bool> ChangePassword(string oldPassword, string newPassword);
 	Task<ApplicationUser> GetUserInfo();
 	Task<bool> ChangeEmail(string newEmail);
-	Task<bool> ChangePinCode(string pinCode);
-	Task<bool> CheckPinCode(string pinCode);
 	void IsAuthenticated();
 }

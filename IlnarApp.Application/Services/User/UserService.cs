@@ -16,7 +16,7 @@ public class UserService(
 	IJwtGenerator jwtGenerator,
 	IHttpContextAccessor httpContextAccessor) : IUserService
 {
-	public async Task<bool> SignUp(string email, string password, string pinCode)
+	public async Task<bool> SignUp(string email, string password)
 	{
 		var userExists = await userManager.FindByEmailAsync(email);
 
@@ -25,7 +25,7 @@ public class UserService(
 			throw new ApiException("Пользователь уже существует");
 		}
 
-		var user = new ApplicationUser{ PinCode = pinCode};
+		var user = new ApplicationUser();
 		
 		var emailStore = (IUserEmailStore<ApplicationUser>)userStore;
 		
@@ -60,7 +60,7 @@ public class UserService(
 			throw new AuthenticationFailureException("Неверный логин или пароль");
 		}
 		
-		return jwtGenerator.GenerateJwt(user!.Id.ToString());
+		return jwtGenerator.GenerateJwt(user.Id.ToString());
 	}
 
 	
@@ -104,37 +104,6 @@ public class UserService(
 		return true;
 	}
 	
-
-	public async Task<bool> ChangePinCode(string pinCode)
-	{
-		var user = await GetCurrentUser();
-		
-		user!.PinCode = pinCode;
-		
-		var result = await userManager.UpdateAsync(user);
-
-		if (!result.Succeeded)
-		{
-			throw new ApiException("Ошибка при изменении PIN-кода");
-		}
-		
-		return result.Succeeded;
-	}
-	
-
-	public async Task<bool> CheckPinCode(string pinCode)
-	{
-		var user = await GetCurrentUser();
-		
-		var result = user!.PinCode == pinCode;
-
-		if (!result)
-		{
-			throw new ApiException("Неверный PIN-код");
-		}
-		
-		return result;
-	}
 
 	public void IsAuthenticated()
 	{

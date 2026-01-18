@@ -15,7 +15,7 @@ public class UserController(IUserService userService) : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] UserRegisterRequest userRegisterRequest)
     {
-        await userService.SignUp(userRegisterRequest.Email, userRegisterRequest.Password, userRegisterRequest.PinCode);
+        await userService.SignUp(userRegisterRequest.Email, userRegisterRequest.Password);
         
         return Ok(new ResponseData{Success = true, Messages = ["Пользователь успешно добавлен"] });
     }
@@ -62,27 +62,6 @@ public class UserController(IUserService userService) : BaseController
         var user = await userService.GetUserInfo();
         
         return Ok(user);
-    }
-    
-    
-    [HttpPost]
-    [Route("pincode-change")]
-    [ValidationAction]
-    public async Task<IActionResult> PinCodeChange([FromBody] PinCodeChangeRequest request)
-    {
-        await userService.ChangePinCode(request.PinCode);
-        
-        return Ok(new ResponseData{Success = true, Messages = ["PIN-код успешно изменен"] });
-    }
-    
-    
-    [HttpPost]
-    [Route("pincode-check")]
-    public async Task<IActionResult> PinCodeCheck([FromBody] string pinCode)
-    {
-        await userService.CheckPinCode(pinCode);
-        
-        return Ok(new ResponseData{Success = true, Messages = ["PIN-код верный"] });
     }
     
     
