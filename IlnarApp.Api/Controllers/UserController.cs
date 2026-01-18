@@ -9,7 +9,7 @@ namespace IlnarApp.Api.Controllers;
 
 public class UserController(IUserService userService) : BaseController
 {
-    [HttpPost]
+    /*[HttpPost]
     [Route("register")]
     [ValidationAction]
     [AllowAnonymous]
@@ -18,7 +18,7 @@ public class UserController(IUserService userService) : BaseController
         await userService.SignUp(userRegisterRequest.Email, userRegisterRequest.Password);
         
         return Ok(new ResponseData{Success = true, Messages = ["Пользователь успешно добавлен"] });
-    }
+    }*/
 
 
     [HttpPost]
