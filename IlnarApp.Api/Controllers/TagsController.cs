@@ -84,6 +84,8 @@ public class TagsController(ITagRepository tagRepository) : BaseController
 		{
 			throw new EntityNotFoundException("Тег не найден");
 		}
+		
+		tag.Deleted = true;
 
 		var result = await tagRepository.DeleteAsync(tag);
 

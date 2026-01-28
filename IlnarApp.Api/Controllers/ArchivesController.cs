@@ -31,13 +31,13 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	{
 		var archivesLimit = limit is 0 or > 15 ? 15 : limit;
 		
-		var tags = await archiveRepository.GetListAsync(offset, archivesLimit, null);
+		var archives = await archiveRepository.GetListAsync(offset, archivesLimit, null);
 
 		var archivesCount = await archiveRepository.GetEntitiesCountAsync(null);
 
 		var response = new PaginationData
 		{
-			Data = tags,
+			Data = archives,
 			Pagination = new Paginator(archivesCount, offset, archivesLimit)
 		};
 		
@@ -78,14 +78,16 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[Route("delete/{id:guid}")]
 	public async Task<IActionResult> DeleteAsync(Guid id)
 	{
-		var tag = await GetById(id);
+		var archive = await GetById(id);
 
-		if (tag == null)
+		if (archive == null)
 		{
 			throw new EntityNotFoundException("Архив не найден");
 		}
+		
+		archive.Deleted = true;
 
-		var result = await archiveRepository.DeleteAsync(tag);
+		var result = await archiveRepository.DeleteAsync(archive);
 
 		var message = result ? "Архив успешно удален" : "Ошибка при удалении архива";
 

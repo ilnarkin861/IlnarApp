@@ -149,6 +149,8 @@ public class NotesController(
 		{
 			throw new EntityNotFoundException("Запись не найдена");
 		}
+		
+		note.Deleted = true;
 
 		var result = await noteRepository.DeleteAsync(note);
 

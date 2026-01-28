@@ -21,13 +21,13 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 
 	public async Task<NoteType?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().FirstOrDefaultAsync(nt => nt.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(nt => nt.Id == id && nt.Deleted == false);
 	}
 
 	
 	public async Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().ToListAsync();
+		return await GetDbSet().Where(nt => nt.Deleted == false).ToListAsync();
 	}
 
 	
@@ -47,7 +47,7 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 	
 	public async Task<bool> DeleteAsync(NoteType entity)
 	{
-		context.Remove(entity);
+		context.Update(entity);
 		return await context.SaveChangesAsync() > 0;
 	}
 	

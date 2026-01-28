@@ -27,7 +27,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
-			.FirstOrDefaultAsync(n => n.Id == id);
+			.FirstOrDefaultAsync(n => n.Id == id && n.Deleted == false);
 	}
 
 	
@@ -40,6 +40,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
+			.Where(n => n.Deleted == false)
 			.ToListAsync();
 	}
 
@@ -62,7 +63,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 
 	public async Task<bool> DeleteAsync(Note entity)
 	{
-		context.Remove(entity);
+		context.Update(entity);
 		return await context.SaveChangesAsync() > 0;
 	}
 	

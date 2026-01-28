@@ -84,6 +84,8 @@ public class NoteTypesController(INoteTypeRepository noteTypeRepository) : BaseC
 		{
 			throw new EntityNotFoundException("Тип записи не найден");
 		}
+		
+		noteType.Deleted = true;
 
 		var result = await noteTypeRepository.DeleteAsync(noteType);
 

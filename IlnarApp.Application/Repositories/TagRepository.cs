@@ -21,7 +21,7 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 	
 	public async Task<Tag?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().FirstOrDefaultAsync(t => t.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(t => t.Id == id && t.Deleted == false);
 	}
 	
 
@@ -30,6 +30,7 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 		return await GetDbSet().OrderByDescending(t => t.CreatedAt)
 			.Skip(offset)
 			.Take(limit)
+			.Where(t => t.Deleted == false)
 			.ToListAsync();
 	}
 	
@@ -50,7 +51,7 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 	
 	public async Task<bool> DeleteAsync(Tag entity)
 	{
-		context.Remove(entity);
+		context.Update(entity);
 		return await context.SaveChangesAsync() > 0;
 	}
 	

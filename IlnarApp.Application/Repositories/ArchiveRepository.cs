@@ -19,7 +19,7 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 
 	public async Task<Archive?> GetAsync(Guid id, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id);
+		return await GetDbSet().FirstOrDefaultAsync(x => x.Id == id && x.Deleted == false);
 	}
 
 	public async Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
@@ -28,6 +28,7 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 			.Skip(offset)
 			.Take(limit)
 			.IgnoreAutoIncludes()
+			.Where(a => a.Deleted == false)
 			.ToListAsync();
 	}
 
@@ -45,7 +46,7 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 
 	public async Task<bool> DeleteAsync(Archive entity)
 	{
-		context.Remove(entity);
+		context.Update(entity);
 		return await context.SaveChangesAsync() > 0;
 	}
 
