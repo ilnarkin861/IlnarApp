@@ -12,4 +12,5 @@ public class Note : Entity
 	public DateOnly Date { get; set; }
 	public Archive? Archive { get; set; }
 	public List<Tag>? Tags { get; set; } = [];
+	public bool Deleted { get; set; }
 }
