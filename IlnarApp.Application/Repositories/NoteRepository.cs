@@ -90,7 +90,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	{
 		if (entityFilter == null) return await GetDbSet().CountAsync();
 
-		return await BuildQuery(entityFilter).CountAsync();
+		return await BuildQuery(entityFilter).Where(e => e.Deleted == false).CountAsync();
 	}
 	
 	

@@ -67,6 +67,6 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 
 	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().CountAsync();
+		return await GetDbSet().Where(e => e.Deleted == false).CountAsync();
 	}
 }

@@ -72,6 +72,6 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 
 	public async Task<int> GetEntitiesCountAsync(IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().CountAsync();
+		return await GetDbSet().Where(e => e.Deleted == false).CountAsync();
 	}
 }
