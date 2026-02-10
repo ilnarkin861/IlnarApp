@@ -29,16 +29,14 @@ public class ArchivesController(IArchiveRepository archiveRepository) : BaseCont
 	[Route("")]
 	public async Task<IActionResult> GetListAsync([FromQuery] int offset, [FromQuery] int limit)
 	{
-		var archivesLimit = limit is 0 or > 10 ? 10 : limit;
-		
-		var archives = await archiveRepository.GetListAsync(offset, archivesLimit, null);
+		var archives = await archiveRepository.GetListAsync(offset, limit, null);
 
 		var archivesCount = await archiveRepository.GetEntitiesCountAsync(null);
 
 		var response = new PaginationData
 		{
 			Data = archives,
-			Pagination = new Paginator(archivesCount, offset, archivesLimit)
+			Pagination = new Paginator(archivesCount, offset, limit)
 		};
 		
 		return Ok(response);
