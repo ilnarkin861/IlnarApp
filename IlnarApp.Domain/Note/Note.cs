@@ -13,4 +13,5 @@ public class Note : Entity
 	public Archive? Archive { get; set; }
 	public List<Tag>? Tags { get; set; } = [];
 	public bool Deleted { get; set; }
+	public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(3);
 }
