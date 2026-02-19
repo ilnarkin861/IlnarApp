@@ -37,6 +37,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.Skip(offset)
 			.Take(limit)
 			.OrderByDescending(n => n.Date)
+			.ThenByDescending(n => n.CreatedDate)
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
