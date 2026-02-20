@@ -27,10 +27,11 @@ public class TagRepository(ApplicationDbContext context) : ITagRepository
 
 	public async Task<List<Tag>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().OrderByDescending(t => t.CreatedAt)
+		return await GetDbSet()
+			.Where(t => t.Deleted == false)
+			.OrderByDescending(t => t.CreatedAt)
 			.Skip(offset)
 			.Take(limit)
-			.Where(t => t.Deleted == false)
 			.ToListAsync();
 	}
 	

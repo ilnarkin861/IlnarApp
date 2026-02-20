@@ -34,14 +34,16 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 	public async Task<List<Note>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
 		return await BuildQuery(entityFilter)
-			.Skip(offset)
-			.Take(limit)
+			.AsNoTracking()
+			.Where(n => n.Deleted == false)
 			.OrderByDescending(n => n.Date)
 			.ThenByDescending(n => n.CreatedDate)
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
-			.Where(n => n.Deleted == false)
+			.Skip(offset)
+			.Take(limit)
+			.AsSplitQuery()
 			.ToListAsync();
 	}
 

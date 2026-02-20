@@ -24,11 +24,12 @@ public class ArchiveRepository(ApplicationDbContext context) : IArchiveRepositor
 
 	public async Task<List<Archive>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().OrderByDescending(a => a.CreatedAt)
+		return await GetDbSet()
+			.Where(a => a.Deleted == false)
+			.OrderByDescending(a => a.CreatedAt)
 			.Skip(offset)
 			.Take(limit)
 			.IgnoreAutoIncludes()
-			.Where(a => a.Deleted == false)
 			.ToListAsync();
 	}
 
