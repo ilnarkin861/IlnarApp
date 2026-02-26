@@ -124,9 +124,12 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			query = query.Where(n => n.Date.Month == filter.Month);
 		}
 		
-		if (filter.Month != null)
+		if (filter is { Month: not null, Year: not null })
 		{
-			query = query.Where(n => n.Date.Day == filter.Day);
+			var startDate = new DateOnly(filter.Year.Value, filter.Month.Value, 1);
+			var endDate = startDate.AddMonths(1);
+    
+			query = query.Where(n => n.Date >= startDate && n.Date < endDate);
 		}
 
 		if (filter.TagIds is { Count: > 0 })
