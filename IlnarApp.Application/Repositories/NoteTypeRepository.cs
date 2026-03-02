@@ -27,7 +27,7 @@ public class NoteTypeRepository(ApplicationDbContext context) : INoteTypeReposit
 	
 	public async Task<List<NoteType>> GetListAsync(int offset, int limit, IEntityFilter? entityFilter)
 	{
-		return await GetDbSet().Where(nt => nt.Deleted == false).ToListAsync();
+		return await GetDbSet().Where(nt => nt.Deleted == false).OrderBy(nt => nt.CreatedAt).ToListAsync();
 	}
 
 	

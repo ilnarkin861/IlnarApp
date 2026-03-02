@@ -37,7 +37,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.AsNoTracking()
 			.Where(n => n.Deleted == false)
 			.OrderByDescending(n => n.Date)
-			.ThenByDescending(n => n.CreatedDate)
+			.ThenByDescending(n => n.CreatedAt)
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
