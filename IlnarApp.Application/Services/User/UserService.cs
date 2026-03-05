@@ -57,7 +57,7 @@ public class UserService(
 		
 		if (!result.Succeeded)
 		{
-			throw new AuthenticationFailureException("Неверный логин или пароль");
+			throw new ApiException("Неверный логин или пароль");
 		}
 		
 		return jwtGenerator.GenerateJwt(user.Id.ToString());
