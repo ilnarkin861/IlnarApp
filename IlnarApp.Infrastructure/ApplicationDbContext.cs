@@ -31,6 +31,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		builder.Entity<Note>().HasOne(n => n.Archive).WithMany(a => a.Notes).OnDelete(DeleteBehavior.SetNull);
 		builder.Entity<Tag>();
 		builder.Entity<Archive>();
+		builder.Entity<NoteImage>();
 	}
 }
 

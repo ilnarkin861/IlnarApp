@@ -12,6 +12,7 @@ public class Note : Entity
 	public DateOnly Date { get; set; }
 	public Archive? Archive { get; set; }
 	public List<Tag>? Tags { get; set; } = [];
+	public List<NoteImage>? NoteImages { get; set; } = [];
 	public bool Deleted { get; set; }
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(3);
 }
