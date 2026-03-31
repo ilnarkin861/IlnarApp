@@ -1,7 +1,10 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using IlnarApp.Api.Middleware;
 using IlnarApp.Application.Options;
 using IlnarApp.Application.Repositories;
 using IlnarApp.Application.Services.Jwt;
+using IlnarApp.Application.Services.S3;
 using IlnarApp.Application.Services.User;
 using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Identity;
@@ -12,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -76,12 +80,29 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 	.AddSignInManager()
 	.AddDefaultTokenProviders();
 
+builder.Services.Configure<S3Options>(builder.Configuration.GetSection("S3"));
+builder.Services.AddScoped<IAmazonS3>(sp =>
+{
+	var s3Options = sp.GetRequiredService<IOptions<S3Options>>().Value;
+    
+	var credentials = new BasicAWSCredentials(s3Options.AccessKey, s3Options.SecretAccessKey);
+    
+	var config = new AmazonS3Config
+	{
+		ServiceURL = s3Options.Url,
+		ForcePathStyle = true
+	};
+
+	return new AmazonS3Client(credentials, config);
+});
+
 builder.Services.AddScoped<INoteTypeRepository, NoteTypeRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IArchiveRepository, ArchiveRepository>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IS3Service<NoteImage>, S3Service>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(setup =>
