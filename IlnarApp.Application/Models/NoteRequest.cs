@@ -22,4 +22,5 @@ public class NoteRequest
 	public Archive? Archive { get; set; }
 
 	public List<Tag>? Tags { get; set; } = [];
+	public List<NoteImage>? NoteImages { get; set; } = [];
 }

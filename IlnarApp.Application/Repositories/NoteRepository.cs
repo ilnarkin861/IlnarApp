@@ -27,6 +27,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
+			.Include(n => n.NoteImages)
 			.FirstOrDefaultAsync(n => n.Id == id && n.Deleted == false);
 	}
 
@@ -41,6 +42,7 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
 			.Include(n => n.NoteType)
 			.Include(n => n.Archive)
 			.Include(n => n.Tags)
+			.Include(n => n.NoteImages)
 			.Skip(offset)
 			.Take(limit)
 			.AsSplitQuery()

@@ -1,4 +1,5 @@
 using IlnarApp.Domain;
+using IlnarApp.Domain.Note;
 using Microsoft.AspNetCore.Http;
 
 namespace IlnarApp.Application.Services.S3;
@@ -12,4 +13,5 @@ public interface IS3Service<TEntity> where TEntity : Entity
     Task<bool> DeleteFileAsync(Guid [] ids);
     Task<List<TEntity>> GetFilesListAsync(int offset, int limit);
     Task<int> GetFilesCountAsync();
+    Task<NoteImage?> GetNoteImageAsync(Guid id);
 }

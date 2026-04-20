@@ -2,6 +2,7 @@ using IlnarApp.Api.Actions;
 using IlnarApp.Application.Exceptions;
 using IlnarApp.Application.Helpers;
 using IlnarApp.Application.Models;
+using IlnarApp.Application.Services.S3;
 using IlnarApp.Domain.Archive;
 using IlnarApp.Domain.Note;
 using IlnarApp.Domain.Tag;
@@ -14,8 +15,10 @@ public class NotesController(
 	INoteRepository noteRepository,
 	INoteTypeRepository noteTypeRepository,
 	IArchiveRepository archiveRepository,
-	ITagRepository tagRepository) : BaseController
+	ITagRepository tagRepository,
+	IS3Service<NoteImage> s3Service) : BaseController
 {
+	
 	[HttpGet]
 	[Route("{id:guid}")]
 	public async Task<IActionResult> GetAsync(Guid id)
@@ -76,17 +79,38 @@ public class NotesController(
 			if (archive != null) note.Archive = archive;
 		}
 		
-		if (noteRequest.Tags is not { Count: > 0 }) return Ok(await noteRepository.InsertAsync(note));
-		
-		var tags = new List<Tag>();
+		if (noteRequest.Tags is not { Count: > 0 } && noteRequest.NoteImages is not { Count: > 0 }) return Ok(await noteRepository.InsertAsync(note));
 
-		foreach (var item in noteRequest.Tags)
+		if (noteRequest.Tags is { Count: > 0 })
 		{
-			var tag = await tagRepository.GetAsync(item.Id, null);
-			if (tag != null) tags.Add(tag);
+			var tags = new List<Tag>();
+
+			foreach (var item in noteRequest.Tags)
+			{
+				var tag = await tagRepository.GetAsync(item.Id, null);
+				if (tag != null) tags.Add(tag);
+			}
+
+			note.Tags = tags;
+		}
+		
+		if (noteRequest.NoteImages is { Count: > 0 })
+		{
+			var images = new List<NoteImage>();
+			foreach (var item in noteRequest.NoteImages)
+			{
+				var image = await s3Service.GetNoteImageAsync(item.Id); 
+				
+				if (image != null) 
+				{
+					images.Add(image);
+				}
+			}
+			note.NoteImages = images;
 		}
 
-		note.Tags = tags;
+
+
 
 		return Ok(await noteRepository.InsertAsync(note));
 	}
@@ -123,17 +147,33 @@ public class NotesController(
 		
 		note.Tags?.Clear();
 		
-		if (noteRequest.Tags is not { Count: > 0 }) return Ok(await noteRepository.UpdateAsync(note));
+		if (noteRequest.Tags is not { Count: > 0 } && noteRequest.NoteImages is not { Count: > 0 }) return Ok(await noteRepository.UpdateAsync(note));
 		
-		var tags = new List<Tag>();
-		
-		foreach (var item in noteRequest.Tags)
+		if (noteRequest.Tags is { Count: > 0 })
 		{
-			var tag = await tagRepository.GetAsync(item.Id, null);
-			if (tag != null) tags.Add(tag);
-		}
+			var tags = new List<Tag>();
 
-		note.Tags = tags;
+			foreach (var item in noteRequest.Tags)
+			{
+				var tag = await tagRepository.GetAsync(item.Id, null);
+				if (tag != null) tags.Add(tag);
+			}
+
+			note.Tags = tags;
+		}
+		
+		note.NoteImages?.Clear();
+
+		if (noteRequest.NoteImages is { Count: > 0 })
+		{
+			if (note.NoteImages == null) note.NoteImages = new List<NoteImage>();
+			
+			foreach (var item in noteRequest.NoteImages)
+			{
+				var image = await s3Service.GetNoteImageAsync(item.Id);
+				if (image != null) note.NoteImages.Add(image);
+			}
+		}
 		
 		return Ok(await noteRepository.UpdateAsync(note));
 	}
@@ -151,6 +191,10 @@ public class NotesController(
 		}
 		
 		note.Deleted = true;
+		
+		note.Tags?.Clear();
+		
+		note.NoteImages?.Clear();
 
 		var result = await noteRepository.DeleteAsync(note);
 

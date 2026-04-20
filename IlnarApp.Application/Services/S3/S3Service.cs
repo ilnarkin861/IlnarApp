@@ -168,6 +168,11 @@ public class S3Service(
         return await GetDbSet().Where(e => e.Deleted == false).CountAsync();
     }
 
+    public async Task<NoteImage?> GetNoteImageAsync(Guid id)
+    {
+        return await GetDbSet().FirstOrDefaultAsync(i => i.Id == id && i.Deleted == false);
+    }
+
 
     private async Task<Stream> CompressImageAsync(IFormFile file)
     {
